@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CNU Nanophotonics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f4f7fb;
+      --card:#fff;
+      --text:#1d2b3a;
+      --muted:#6b7785;
+      --brand:#0b63c4;
+      --brand-2:#1367d1;
+      --line:#e4e8ee;
+      --shadow:0 10px 24px rgba(20,43,88,.12);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter, "Noto Sans KR", system-ui, Segoe UI, Roboto, Arial, sans-serif;}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1400px;margin:0 auto;padding:24px}
+    header{
+      position:sticky;top:0;
+      backdrop-filter:saturate(160%) blur(12px);
+      background:#ffffff;
+      border-bottom:none;
+      z-index:20;
+    }
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:10px 24px}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:12px 24px}
+    .logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px}
+    .logo-badge{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:var(--shadow)}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap}
+    .tab{
+      position:relative;
+      padding:10px 8px;
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-weight:700;
+      letter-spacing:-.01em;
+      opacity:.85;
+      cursor:pointer;
+      font-size: 1.2rem;
+    }
+    .tab::after{
+      content:'';position:absolute;left:8px; right:8px; bottom:4px;height:2px; background:#1d2b3a;transform:scaleX(0); transform-origin:left;transition:transform .18s ease;
+    }
+    .tab:hover::after,
+    .tab.active::after{ transform:scaleX(1); }
+
+    @media (max-width: 768px) {
+      header {height: auto;padding: 10px 0;}
+      .nav.container {flex-direction: column;align-items: flex-start;padding: 0 10px;}
+      .logo {margin-left: 0 !important;margin-bottom: 10px;}
+      .tabs {flex-direction: column;gap: 8px;width: 100%;}
+      .tab {width: 100%;text-align: left;padding: 8px 10px;border-radius: 6px;background: #f0f2f5;}
+      .tab::after {display: none;}
+      .container {padding: 10px;}
+      .grid.cols-3,
+      .grid.cols-2 {gap: 16px;grid-template-columns: 1fr;}
+      .photo-collage {gap: 8px;grid-template-columns: 1fr;}
+      .photo-collage .round {width: 60px;height: 60px;margin-top: 10px;}
+      .blue-banner {padding: 20px;}
+      .blue-banner h2 {font-size: 22px;}
+      .title-xl {font-size: 28px;}
+      .title-lg {font-size: 20px;}
+    }
+    @media (max-width: 768px) {
+      .nav.container {flex-direction: row;justify-content: space-between;padding: 0 10px;}
+      .tabs {flex-direction: row;flex-wrap: nowrap;gap: 8px;justify-content: flex-end;}
+      .tab {font-size: 0.8rem;padding: 6px 8px;width: auto;}
+    }
+    .card {background: var(--card);border: 1px solid var(--line);border-radius: var(--radius);box-shadow: var(--shadow);}
+    .card h3 {margin: 0 0 12px;font-size: 18px;}
+    .card .body {padding: 18px;}
+    .card .body .row {display: flex;gap: 0px;align-items: center;}
+    .card .body .row img {width: 120px;height: 180px;object-fit: cover;border-radius: 14px;border: 1px solid var(--line);}
+    .card .body .row > div {display: flex;flex-direction: column;justify-content: center;text-align: left;}
+    #membersWrap .card .body {padding: 16px;display: flex;flex-direction: column;justify-content: space-between;height: 100%;}
+    #membersWrap .card .member-main {display: flex;align-items: flex-start;gap: 16px;}
+    #membersWrap .card .member-main img {width: 120px;height: 180px;object-fit: cover;border-radius: 12px;flex-shrink: 0;}
+    #membersWrap .card .member-info {text-align: left;}
+    #membersWrap .card .member-info strong {font-size: 1.1em;font-weight: 600;}
+    #membersWrap .card .member-info .muted {font-size: 0.95em;color: var(--muted);margin-bottom: 8px;}
+    #membersWrap .card .member-info .desc {font-size: 0.9em;line-height: 1.5;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-line-clamp: 3;-webkit-box-orient: vertical;}
+    #membersWrap .card .member-footer {margin-top: 12px;display: flex;justify-content: flex-end;gap: 8px;}
+    #membersWrap .card .member-footer .pill,
+    #membersWrap .card .member-footer .tab {display: inline-flex;align-items: center;justify-content: center;padding: 5px 12px;font-size: 13px;border: 1px solid var(--line);border-radius: 999px;white-space: nowrap;text-decoration: none;cursor: pointer;background-color: transparent;transition: background-color 0.2s ease;}
+    #membersWrap .card .member-footer .pill:hover,
+    #membersWrap .card .member-footer .tab:hover {background-color: #f0f0f0;}
+    #membersWrap .card .member-footer .tab {color: var(--text);}
+    .muted {color: var(--muted);}
+    .cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#051019;border:none;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .list{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+    .list li{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#e9ecef}
+    #pubList.list .pub-year-header {
+        background: transparent;
+        border: none;
+        padding: 24px 0 8px;
+        justify-content: flex-start !important;
+        align-items: center;
+    }
+    #pubList.list .pub-year-header h3 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--text);
+    }
+    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+    .row{display:flex;gap:12px;align-items:center}
+    .row-end{display:flex;gap:8px;align-items:center}
+    .plus{display:inline-flex;width:28px;height:28px;border-radius:10px;border:1px solid var(--line);align-items:center;justify-content:center;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:var(--shadow);cursor:pointer}
+    .grid{display:grid;gap:24px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .footer{margin:40px 0 20px;color:var(--muted);text-align:center}
+    .hidden{display:none!important}
+    .tag{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;color:var(--muted)}
+    .title-xl{font-size:34px;margin:0 0 8px;letter-spacing:.1px;line-height:1.25}
+    .title-lg{font-size:24px;margin:0 0 8px;line-height:1.3}
+    .desc{color:var(--muted);line-height:1.6}
+    .hr{height:1px;background:var(--line);margin:16px 0}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:stretch;margin-top:26px}
+    .hero .card{border:none;box-shadow:none;background:transparent}
+    .photo-collage{display:grid;grid-template-columns:2fr 1fr;grid-auto-rows:140px;gap:10px}
+    .photo-collage img{width:100%;height:100%;object-fit:cover;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
+    .photo-collage .wide{grid-column:1 / span 2}
+    .photo-collage .round{border-radius:999px;aspect-ratio:1/1;border:6px solid #fff;box-shadow:0 8px 20px rgba(0,0,0,.12)}
+    .blue-banner{background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#fff;border-radius:22px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,.18);padding:28px;display:flex;flex-direction:column;justify-content:center;min-height:340px}
+    .blue-banner h2{margin:0 0 10px;font-size:28px;line-height:1.3;font-weight:700;letter-spacing:-.01em}
+    .blue-banner p{margin:0;color:#e9f1ff;line-height:1.7}
+    .blue-banner .sub{margin-top:14px;font-size:14px;opacity:.95}
+    .section{margin-top:34px}
+    .section h3{font-size:22px;margin:0 0 12px;font-weight:700;letter-spacing:-.01em;position:relative;display:inline-block;padding-right:10px}
+    .section h3:after{content:'';display:inline-block;width:6px;height:6px;border-radius:999px;background:var(--brand);margin-left:8px;vertical-align:middle}
+    .section .desc{color:var(--muted);line-height:1.7}
+    .bullets{margin:12px 0 0 0;padding:0 0 0 18px}
+    .bullets li{margin:6px 0;color:#4a5868}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:12px}
+    .cal-cell{border:1px solid #edf1f6;border-radius:12px;background:#fbfcfe;min-height:110px;padding:8px;display:flex;flex-direction:column;color:var(--text); cursor: pointer;}
+    .cal-day{font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+    .cal-events{margin-top:6px;display:flex;flex-direction:column;gap:6px}
+    .cal-event{font-size:12px;border-left:3px solid #2a74e6;padding:4px 6px;background:#eef4ff;border-radius:6px;color:var(--text)}
+    .cal-today{outline:2px solid var(--brand-2)}
+    
+    /* [추가] 캘린더 컨트롤 한 줄/우측 정렬 & 모바일 탭 폭 재정의 */
+    #calendarControls{
+      display:flex;
+      flex-direction: row; /* 수평 레이아웃을 보장하기 위해 이 줄을 추가 */
+      gap:8px;
+      align-items:center;
+      justify-content:flex-end;
+      white-space:nowrap;
+      flex-wrap:nowrap;
+      margin-left:auto;
+    }
+    #calendarControls .tab{width:auto;}
+    @media (max-width:768px){
+      #calendarControls .tab{width:auto !important;background:transparent !important;text-align:right;}
+      #calendarControls .pill{white-space:nowrap;}
+    }
+
+    /* [추가된 부분] 캘린더 팝업(Modal) 스타일 */
+    .modal-overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0, 0, 0, 0.5);display: flex;align-items: center;justify-content: center;z-index: 1000;}
+    .modal-content {background: var(--card);padding: 24px;border-radius: var(--radius);box-shadow: var(--shadow);width: 90%;max-width: 500px;}
+    .modal-content .list li {background: var(--bg);}
+  </style>
+</head>
+<body>
+<header style="height:120px; display:flex; align-items:center; justify-content:space-between; padding:0 40px; font-size:1.1rem;">
+  <div class="nav" style="display:flex; align-items:center; width:100%; justify-content:space-between;">
+    <div class="logo" style="display:flex; align-items:center; font-size:1.5rem; font-weight:bold; margin-left: 20px;">
+      <span class="logo-badge"></span>
+      <img src="logo1.png" alt="CNU Nanophotonics Logo" style="height: 80px; width: 80px; margin-right: 10px; vertical-align: middle;">
+      <span style="margin-left:10px; font-size: 1.8rem; vertical-align: middle;">CNU Nanophotonics</span>
+    </div>
+    <nav class="tabs" style="display:flex; gap:40px;">
+      <a class="tab" href="/" data-page="home" style="text-decoration:none; color:#000; font-weight:500;">Home</a>
+      <a class="tab" href="/members" data-page="members" style="text-decoration:none; color:#000; font-weight:500;">Members</a>
+      <a class="tab" href="/research" data-page="research" style="text-decoration:none; color:#000; font-weight:500;">Research</a>
+      <a class="tab" href="/publications" data-page="publications" style="text-decoration:none; color:#000; font-weight:500;">Publications</a>
+      <a class="tab" href="/notices" data-page="notices" style="text-decoration:none; color:#000; font-weight:500;">Notices</a>
+    </nav>
+    <div class="row-end" style="display:flex; gap:15px; align-items:center;">
+      <span id="userEmail" class="pill hidden"></span>
+      <button id="signInBtn" class="cta">Admin</button>
+      <button id="signOutBtn" class="tab hidden">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+    <section id="page-home">
+      <div class="hero">
+        <div class="card">
+          <div class="body">
+            <div class="photo-collage">
+              <img class="wide" src="/image1.png" alt="equipment wide">
+              <img src="/image2.png" alt="equipment">
+              <img src="/image3.png" alt="equipment">
+              <img class="round" src="/image4.jpg" alt="lab room">
+            </div>
+          </div>
+        </div>
+        <div class="blue-banner">
+          <h2>CMOS 반도체 공정을 기반하여 나노포토닉스 소자들을 제작하고, 
+머신러닝을 활용해 메타표면과 같은 차세대 나노포토닉스 소자를 설계합니다.</h2>
+          <p class="sub">문구 or 사진 등록 가능</p>
+        </div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:24px">
+        <div class="card">
+          <div class="body">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <h3 class="title-lg">Latest Notices</h3>
+              <button class="plus" title="All notices" onclick="navTo('notices')">+</button>
+            </div>
+            <ul id="homeNotices" class="list"></ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="body">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <h3 class="title-lg">Recent Publications</h3>
+              <button class="plus" title="All publications" onclick="navTo('publications')">+</button>
+            </div>
+            <ul id="homePubs" class="list"></ul>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="section">
+        <h3>나노포토닉스 소자 설계 및 제작</h3>
+        <p class="desc"> E-beam Lithography, Maskless Lithography, PECVD, ICPRIE 등을 이용한 소자 제작</p>
+        <ul class="bullets">
+          <li>소자 제작</li>
+        </ul>
+        <div class="grid cols-2" style="margin-top:14px">
+          <div class="card"><img src="/sample-a.png" style="width:100%;height:260px;object-fit:cover;border-radius:14px;border:1px solid var(--line)" alt="sample a"></div>
+          <div class="card"><img src="/sample-b.png" style="width:100%;height:260px;object-fit:cover;border-radius:14px;border:1px solid var(--line)" alt="sample b"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:24px">
+        <div class="body">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <h3 class="title-lg">Lab Calendar</h3>
+            <!-- [수정] 컨트롤 래퍼에 id 추가 -->
+            <div class="row-end" id="calendarControls">
+              <button id="btnAddEvent" class="cta hidden">+ Add Event</button>
+              <button class="tab" id="calPrev" title="Previous month">‹</button>
+              <span class="pill" id="calTitle">Loading…</span>
+              <button class="tab" id="calNext" title="Next month">›</button>
+            </div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="muted" style="margin-top:8px">날짜를 클릭하면 해당 날짜의 이벤트를 확인합니다.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="page-members" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Members</h2>
+        <button id="btnAddMember" class="cta hidden">+ Add Member</button>
+      </div>
+      <p class="desc">구성원 목록입니다. 교수, 박사과정, 석사과정, 학부생, 졸업생으로 구분됩니다.</p>
+      
+      <div id="membersWrap">
+        <h3 class="member-category-title">- 교수 -</h3>
+        <div id="professors" class="grid" style="margin-top:16px">
+            <div class="card" style="margin-top:24px">
+              <div class="body">
+                <div style="display: flex; gap: 28px; align-items: flex-start;">
+                  <div style="flex-shrink: 0;">
+                    <img src="/images/ysp_image.jpg" alt="Yeonsang Park" style="width: 200px; border-radius: 12px; border: 1px solid var(--line);">
+                  </div>
+                  <div style="flex-grow: 1;">
+                    <h2 style="font-size: 24px; margin-top: 0; margin-bottom: 4px;">Yeonsang Park, Ph.D.</h2>
+                    <p style="margin-top: 0; margin-bottom: 16px; color: var(--muted);">Professor</p>
+                    <p style="line-height: 1.6;">
+                      Department of Physics, Chungnam National University<br>
+                      99 Daehak-ro, Yuseong-gu, Daejeon 34134, Korea<br>
+                      Room 432, Building W11-2<br>
+                      Tel: +82-42-821-6543<br>
+                      E-mail: <a href="mailto:yeonsang.park@cnu.ac.kr" style="color: var(--brand);">yeonsang.park@cnu.ac.kr</a>
+                    </p>
+                    <div style="margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap;">
+                      <a href="https://scholar.google.co.kr/citations?user=wTf1VkwAAAAJ&hl=ko" target="_blank" class="pill">Google Scholar</a>
+                      <a href="https://orcid.org/0000-0002-9746-8026" target="_blank" class="pill">ORCID: 0000-0002-9746-8026</a>
+                      <a href="https://www.scopus.com/authid/detail.uri?authorId=7405374663#tab=topics" target="_blank" class="pill">Scopus ID: 7405374663</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="hr"></div>
+                <h3 style="margin-top: 24px; font-size: 20px;">Education</h3>
+                <ul style="padding-left: 20px; line-height: 1.7; margin-top: 12px;">
+                  <li><b>1992.03 - 1996.02 :</b> B.D. in Department of Astronomy, Seoul National University (SNU), Seoul, Korea</li>
+                  <li><b>1999.03 - 2001.02 :</b> M.D. in Department of Physics, Seoul National University (SNU), Seoul, Korea</li>
+                  <li><b>2001.03 - 2007.02 :</b> Ph.D. in Department of Physics and Astronomy, Seoul National University (SNU), Seoul, Korea</li>
+                </ul>
+                <h3 style="margin-top: 24px; font-size: 20px;">Experience</h3>
+                <ul style="padding-left: 20px; line-height: 1.7; margin-top: 12px;">
+                  <li><b>2007.09 - 2009.12 :</b> Post-doc. in Institut des Nanotechnologies de Lyon (INL), Lyon, France</li>
+                  <li><b>2010.01 - 2020.08 :</b> Researcher in Samsung Advanced Institute of Technology (SAIT), Suwon, Korea</li>
+                  <li><b>2020.09 - 2025.02 :</b> Associate Professor in Department of Physics, Chungnam National University (CNU), Daejeon, Korea</li>
+                  <li><b>2025.03 - present :</b> Professor in Department of Physics, Chungnam National University (CNU), Daejeon, Korea</li>
+                </ul>
+              </div>
+            </div>
+        </div>
+        
+        <h3 class="member-category-title">- 박사과정 -</h3>
+        <div id="phd-students" class="grid cols-3" style="margin-top:16px">
+        </div>
+        
+        <h3 class="member-category-title">- 석사과정 -</h3>
+        <div id="masters-students" class="grid cols-3" style="margin-top:16px">
+        </div>
+        
+        <h3 class="member-category-title">- 학부생 -</h3>
+        <div id="undergrads" class="grid cols-3" style="margin-top:16px">
+        </div>
+
+        <h3 class="member-category-title">- 졸업생 -</h3>
+        <div id="alumni" class="grid cols-3" style="margin-top:16px">
+        </div>
+      </div>
+    </section>
+
+    <section id="page-research" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Research</h2>
+        <button id="btnAddTopic" class="cta hidden">+ Add Topic</button>
+      </div>
+      <div id="researchWrap" class="grid cols-2" style="margin-top:16px"></div>
+    </section>
+
+    <section id="page-publications" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Publications</h2>
+        <button id="btnAddPub" class="cta hidden">+ Add Publication</button>
+      </div>
+      <ul id="pubList" class="list" style="margin-top:16px"></ul>
+    </section>
+
+    <section id="page-notices" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Notices</h2>
+        <button id="btnAddNotice" class="cta hidden">+ New Notice</button>
+      </div>
+      <ul id="noticeList" class="list" style="margin-top:16px"></ul>
+    </section>
+</main>
+
+<footer class="footer container">© <span id="year"></span> CNU Nanophotonics. All rights reserved.</footer>
+
+<div id="event-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <h3 id="modal-title"></h3>
+    <ul id="modal-event-list" class="list"></ul>
+    <button id="modal-close" class="tab" style="margin-top: 16px;">닫기</button>
+  </div>
+</div>
+
+<script type="module">
+    // Firebase SDK (v10+ modular)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, getDoc, doc, query, orderBy, limit, serverTimestamp, updateDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAO5gm1Yf94pH8v6Gzby_RCmvunbKvaAU0",
+      authDomain: "cnu-nanophotonics-lab.firebaseapp.com",
+      projectId: "cnu-nanophotonics-lab",
+      storageBucket: "cnu-nanophotonics-lab.firebasestorage.app",
+      messagingSenderId: "22902892296",
+      appId: "1:22902892296:web:f5bf24ac7f13f244ee6ebd",
+      measurementId: "G-4R655EPF3C"
+    };
+    const ADMIN_EMAILS = ["cnunanophotonics@gmail.com","yeonsang.park@cnu.ac.kr"];
+
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // UI helpers
+    const $ = (sel)=>document.querySelector(sel);
+    const $$ = (sel)=>document.querySelectorAll(sel);
+    const yearEl = $('#year'); yearEl.textContent = new Date().getFullYear();
+    const pages = { home: $('#page-home'), members: $('#page-members'), research: $('#page-research'), publications: $('#page-publications'), notices: $('#page-notices') };
+
+    // Routing
+    function routeFromPath(){
+      const path = location.pathname.replace(/\/$/, '') || '/';
+      const map = { '/':'home','/members':'members','/research':'research','/publications':'publications','/notices':'notices' };
+      return map[path] || 'home';
+    }
+    async function go(name){
+      Object.values(pages).forEach(p=>p.classList.add('hidden'));
+      if (!pages[name]) name = 'home';
+      pages[name].classList.remove('hidden');
+      $$('.tabs .tab').forEach(t=> t.classList.toggle('active', t.dataset.page===name));
+      try{
+        if (name === 'home') {
+          await Promise.all([loadHomeNotices(), loadHomePubs(), renderCalendar()]);
+        } else if (name === 'members') {
+          await loadMembers();
+        } else if (name === 'research') {
+          await loadResearch();
+        } else if (name === 'publications') {
+          await loadPubs();
+        } else if (name === 'notices') {
+          await loadNotices();
+        }
+      }catch(e){ console.error(`Error loading data for page ${name}:`, e); }
+    }
+    window.navTo = function(name){
+      const path = name==='home' ? '/' : `/${name}`;
+      history.pushState({page:name}, '', path);
+      go(name);
+      window.scrollTo({top:0, behavior:'instant'});
+    }
+    $$('.tabs .tab').forEach(a=>{
+      a.addEventListener('click', (e)=>{
+        const page = a.dataset.page; if(!page) return;
+        e.preventDefault(); navTo(page);
+      });
+    });
+    window.addEventListener('popstate', ()=>{ go(routeFromPath()); });
+
+    // Auth
+    const signInBtn = $('#signInBtn');
+    const signOutBtn = $('#signOutBtn');
+    const userEmail = $('#userEmail');
+    const provider = new GoogleAuthProvider();
+
+    async function signIn(){ try{ await signInWithPopup(auth, provider); }catch(e){ alert(e.message); } }
+    async function doSignOut(){ try{ await signOut(auth); }catch(e){ alert(e.message);} }
+
+    signInBtn.addEventListener('click', signIn);
+    signOutBtn.addEventListener('click', doSignOut);
+
+    function isAdmin(user){ return !!user && ADMIN_EMAILS.includes(user.email); }
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        if (isAdmin(user)) {
+          console.log(`관리자 ${user.email} 님이 로그인했습니다.`);
+          userEmail.textContent = user.email;
+          userEmail.classList.remove('hidden');
+          signOutBtn.classList.remove('hidden');
+          const mainSignInBtn = $('#signInBtn');
+          if(mainSignInBtn) mainSignInBtn.classList.add('hidden');
+          ['btnAddNotice','btnAddPub','btnAddMember','btnAddTopic','btnAddEvent'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.classList.remove('hidden');
+          });
+        } else {
+          console.warn(`권한 없는 사용자(${user.email})가 로그인을 시도했습니다.`);
+          alert(`접근 권한이 없는 계정입니다. 관리자 계정으로 로그인해주세요.\n\n(시도한 계정: ${user.email})`);
+          signOut(auth);
+        }
+      } else {
+        console.log('로그아웃 상태입니다.');
+        userEmail.classList.add('hidden');
+        signOutBtn.classList.add('hidden');
+        const mainSignInBtn = $('#signInBtn');
+        if(mainSignInBtn) mainSignInBtn.classList.remove('hidden');
+        ['btnAddNotice','btnAddPub','btnAddMember','btnAddTopic','btnAddEvent'].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.classList.add('hidden');
+        });
+      }
+    });
+
+    // Firestore helpers
+    const col = (name)=>collection(db, name);
+    const fmtDate = (ts)=> ts?.toDate ? ts.toDate().toLocaleDateString() : new Date(ts).toLocaleDateString();
+
+    // Notices
+    async function loadHomeNotices(){
+      const q = query(col('notices'), orderBy('createdAt','desc'), limit(5));
+      const snap = await getDocs(q);
+      const list = $('#homeNotices'); list.innerHTML='';
+      snap.forEach(d=>{
+        const n = d.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="row" style="gap:10px"><span class="pill">${fmtDate(n.createdAt)}</span><strong>${n.title}</strong></div>`;
+        list.appendChild(li);
+      });
+    }
+    async function loadNotices(){
+      const q = query(col('notices'), orderBy('createdAt','desc'));
+      const snap = await getDocs(q);
+      const list = $('#noticeList'); list.innerHTML='';
+      snap.forEach(d=>{
+        const n = d.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="flex:1">
+            <div class="row" style="justify-content:space-between">
+              <strong>${n.title}</strong>
+              <span class="pill">${fmtDate(n.createdAt)}</span>
+            </div>
+            <div class="muted" style="margin-top:6px">${n.body?.slice(0,160) ?? ''}</div>
+          </div>
+          <div class="row-end">
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="notice-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="notice-del">Delete</button>`:''}
+          </div>`;
+        list.appendChild(li);
+      });
+    }
+    async function addNotice(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('제목'); if(!title) return;
+      const body = prompt('내용 (간단 요약)');
+      await addDoc(col('notices'), { title, body: body||'', createdAt: serverTimestamp() });
+      await loadHomeNotices(); await loadNotices();
+    }
+
+    // Publications
+    async function loadHomePubs(){
+      const q = query(col('publications'), orderBy('year','desc'), limit(5));
+      const snap = await getDocs(q);
+      const list = $('#homePubs'); list.innerHTML='';
+      snap.forEach(d=>{
+        const p = d.data();
+        const li = document.createElement('li');
+        const right = `<div class="row-end"><span class="pill">${p.venue || ''} ${p.year||''}</span>${p.link?`<a class="tab" href="${p.link}" target="_blank">Link</a>`:''}</div>`;
+        li.innerHTML = `<div><strong>${p.title}</strong><div class="muted">${p.authors||''}</div></div>${right}`;
+        list.appendChild(li);
+      });
+    }
+    async function loadPubs(){
+      const q = query(col('publications'), orderBy('year','desc'));
+      const snap = await getDocs(q);
+      const list = $('#pubList');
+      list.innerHTML=''; // 목록 초기화
+
+      let currentYear = null; // 현재 연도를 추적하기 위한 변수
+
+      snap.forEach(d=>{
+        const p = d.data();
+
+        // 현재 논문의 연도가 이전 논문의 연도와 다를 경우, 연도 헤더를 추가합니다.
+        if (p.year !== currentYear) {
+          currentYear = p.year;
+          const yearHeader = document.createElement('li');
+          // 이 리스트 아이템은 헤더 역할을 하므로, 스타일링을 위해 특별한 클래스를 부여합니다.
+          yearHeader.className = 'pub-year-header';
+          yearHeader.innerHTML = `<h3>- ${currentYear} -</h3>`;
+          list.appendChild(yearHeader);
+        }
+
+        // 실제 논문 정보를 담은 리스트 아이템을 추가합니다.
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="flex:1">
+            <strong>${p.title}</strong>
+            <div class="muted">${p.authors||''}</div>
+            <div class="muted">${p.venue||''} ${p.year||''}</div>
+          </div>
+          <div class="row-end">
+            ${p.link?`<a class="tab" href="${p.link}" target="_blank">PDF</a>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="pub-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="pub-del">Delete</button>`:''}
+          </div>`;
+        list.appendChild(li);
+      });
+    }
+    async function addPub(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('논문 제목'); if(!title) return;
+      const authors = prompt('저자 (comma)')||'';
+      const venue = prompt('학회/저널')||'';
+      const year = parseInt(prompt('연도'),10)||new Date().getFullYear();
+      const link = prompt('링크(URL)')||'';
+      await addDoc(col('publications'), { title, authors, venue, year, link, createdAt: serverTimestamp() });
+      await loadHomePubs(); await loadPubs();
+    }
+
+    // Members
+    async function loadMembers() {
+      //$('#professors').innerHTML = '';
+      $('#phd-students').innerHTML = '';
+      $('#masters-students').innerHTML = '';
+      $('#undergrads').innerHTML = '';
+      $('#alumni').innerHTML = '';
+      const q = query(col('members'), orderBy('role', 'desc'));
+      const snap = await getDocs(q);
+
+      snap.forEach(d => {
+        const m = d.data();
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const img = document.createElement('img');
+        img.src = m.avatar || `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(m.name || '')}&backgroundType=gradientLinear`;
+        img.alt = 'avatar';
+
+        card.innerHTML = `
+          <div class="body">
+            <div class="member-main">
+              <div class="member-info">
+                <strong>${m.name || ''}</strong>
+                <div class="muted">${m.role || ''}</div>
+                <div class="desc">${m.bio || ''}</div>
+              </div>
+            </div>
+            <div class="member-footer">
+              ${m.email ? `<a class="pill" href="mailto:${m.email}">Email</a>` : ''}
+              ${m.site ? `<a class="pill" href="${m.site}" target="_blank">Website</a>` : ''}
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="member-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="member-del">Delete</button>` : ''}
+            </div>
+          </div>
+        `;
+        card.querySelector('.member-main').prepend(img);
+        
+        switch (m.role) {
+          case '박사과정':
+            $('#phd-students').appendChild(card);
+            break;
+          case '석사과정':
+            $('#masters-students').appendChild(card);
+            break;
+          case '학부생':
+            $('#undergrads').appendChild(card);
+            break;
+          case '졸업생':
+            $('#alumni').appendChild(card);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+
+
+    async function addMember(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const name = prompt('이름'); if(!name) return;
+      const role = prompt('직함/과정 (선택: 교수, 박사과정, 석사과정, 학부생, 졸업생)');
+      if(!['교수', '박사과정', '석사과정', '학부생', '졸업생'].includes(role)) return alert('유효한 직함을 입력해주세요.');
+      
+      const bio = prompt('간단 소개')||'';
+      const email = prompt('이메일(optional)')||'';
+      const site = prompt('개인 홈페이지(optional)')||'';
+      const avatar = prompt('사진 URL(optional)')||'';
+      await addDoc(col('members'), { name, role, bio, email, site, avatar });
+      await loadMembers();
+    }
+
+    // Research topics
+    async function loadResearch(){
+      const q = query(col('research'), orderBy('title','asc'));
+      const snap = await getDocs(q);
+      const wrap = $('#researchWrap'); wrap.innerHTML='';
+      snap.forEach(d=>{
+        const r = d.data();
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div class="body">
+            <img src="${r.cover||'https://picsum.photos/600/340?blur=2'}" alt="cover" style="width:100%;height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--line)"/>
+            <h3 class="title-lg" style="margin-top:10px">${r.title}</h3>
+            <p class="desc">${r.summary||''}</p>
+            <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+              ${(r.tags||[]).map(t=>`<span class='tag'>${t}</span>`).join('')}
+            </div>
+            <div class="row-end" style="margin-top:10px">
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="topic-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="topic-del">Delete</button>`:''}
+            </div>
+          </div>`;
+        wrap.appendChild(card);
+      });
+    }
+    async function addTopic(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('주제명'); if(!title) return;
+      const summary = prompt('요약')||'';
+      const tags = (prompt('태그(콤마 구분)')||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const cover = prompt('커버 이미지 URL(optional)')||'';
+      await addDoc(col('research'), { title, summary, tags, cover });
+      await loadResearch();
+    }
+
+    // Event delegation for admin edits
+    document.addEventListener('click', async (e)=>{
+      const t = e.target;
+      if(!(t instanceof HTMLElement)) return;
+      const type = t.dataset.type; const id = t.dataset.id;
+      if(!type) return;
+
+      if (!isAdmin(auth.currentUser) && (type.endsWith('-del') || type.endsWith('-edit'))) {
+        return alert('관리자만 가능합니다.');
+      }
+
+      if(type.endsWith('-del')){
+        if(confirm('삭제하시겠습니까?')){
+          const coll = type.startsWith('notice')?'notices': type.startsWith('pub')?'publications': type.startsWith('member')?'members':'research';
+          await deleteDoc(doc(db, coll, id));
+          if(coll==='notices'){ await loadHomeNotices(); await loadNotices(); }
+          if(coll==='publications'){ await loadHomePubs(); await loadPubs(); }
+          if(coll==='members'){ await loadMembers(); }
+          if(coll==='research'){ await loadResearch(); }
+        }
+      }
+      if(type.endsWith('-edit')){
+        const coll = type.startsWith('notice')?'notices': type.startsWith('pub')?'publications': type.startsWith('member')?'members':'research';
+        const ref = doc(db, coll, id); const snap = await getDoc(ref); const cur = snap.data();
+        if(coll==='notices'){
+          const title = prompt('제목', cur.title)||cur.title;
+          const body = prompt('내용 요약', cur.body)||cur.body;
+          await updateDoc(ref, { title, body });
+          await loadHomeNotices(); await loadNotices();
+        }
+        if(coll==='publications'){
+          const title = prompt('논문 제목', cur.title)||cur.title;
+          const authors = prompt('저자', cur.authors)||cur.authors;
+          const venue = prompt('학회/저널', cur.venue)||cur.venue;
+          const year = parseInt(prompt('연도', cur.year),10)||cur.year;
+          const link = prompt('링크', cur.link)||cur.link;
+          await updateDoc(ref, { title, authors, venue, year, link });
+          await loadHomePubs(); await loadPubs();
+        }
+        if(coll==='members'){
+          const name = prompt('이름', cur.name)||cur.name;
+          const role = prompt('직함/과정', cur.role)||cur.role;
+          const bio = prompt('소개', cur.bio)||cur.bio;
+          const email = prompt('이메일', cur.email)||cur.email;
+          const site = prompt('개인홈페이지', cur.site)||cur.site;
+          const avatar = prompt('사진 URL', cur.avatar)||cur.avatar;
+          await updateDoc(ref, { name, role, bio, email, site, avatar });
+          await loadMembers();
+        }
+        if(coll==='research'){
+          const title = prompt('주제명', cur.title)||cur.title;
+          const summary = prompt('요약', cur.summary)||cur.summary;
+          const tags = (prompt('태그(콤마)', (cur.tags||[]).join(','))||'').split(',').map(s=>s.trim()).filter(Boolean);
+          const cover = prompt('커버 URL', cur.cover)||cur.cover;
+          await updateDoc(ref, { title, summary, tags, cover });
+          await loadResearch();
+        }
+      }
+      
+      // 캘린더 이벤트 수정/삭제
+      if (type === 'event-del') {
+        if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+          await deleteDoc(doc(db, 'events', id));
+          await renderCalendar();
+          $('#event-modal').classList.add('hidden');
+        }
+      }
+      if (type === 'event-edit') {
+        const eventRef = doc(db, 'events', id);
+        const eventSnap = await getDoc(eventRef);
+        const cur = eventSnap.data();
+
+        const title = prompt('새로운 이벤트 제목', cur.title);
+        if (!title) return;
+
+        const whereTo = prompt('새로운 장소 (선택 사항)', cur.where || '');
+        const note = prompt('새로운 비고 (선택 사항)', cur.note || '');
+        
+        await updateDoc(eventRef, { title, where: whereTo, note });
+        await renderCalendar();
+        $('#event-modal').classList.add('hidden');
+      }
+    });
+
+    // Wire admin create buttons
+    $('#btnAddNotice').addEventListener('click', addNotice);
+    $('#btnAddPub').addEventListener('click', addPub);
+    $('#btnAddMember').addEventListener('click', addMember);
+    $('#btnAddTopic').addEventListener('click', addTopic);
+
+    // ===== Calendar logic =====
+    const cal = { cur: new Date() };
+    // [수정] 시간대 문제 해결을 위해 toISOString() 대신 현지 시간 기준으로 YYYY-MM-DD 포맷을 생성합니다.
+    function ymd(d) {
+        const year = d.getFullYear();
+        const month = (d.getMonth() + 1).toString().padStart(2, '0');
+        const day = d.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+    function firstOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+    function lastOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
+    function monthTitle(d){ return d.toLocaleString('en-US', { month:'long', year:'numeric' }); }
+    
+    async function loadMonthEvents(d){
+      const start = firstOfMonth(d); const end = lastOfMonth(d);
+      const qRef = query(col('events'), where('date','>=', start), where('date','<=', end), orderBy('date','asc'));
+      const snap = await getDocs(qRef);
+      const byDay = {};
+      snap.forEach(docu=>{ const ev = docu.data(); const key = ymd(new Date(ev.date?.seconds? ev.date.toDate():ev.date)); (byDay[key] ||= []).push({...ev, id: docu.id}); });
+      return byDay;
+    }
+
+    async function renderCalendar(){
+      const titleEl = document.getElementById('calTitle'); if(!titleEl) return;
+      titleEl.textContent = monthTitle(cal.cur);
+      const grid = document.getElementById('calendarGrid'); if(!grid) return; grid.innerHTML='';
+      const start = firstOfMonth(cal.cur); const end = lastOfMonth(cal.cur);
+
+      // [수정] 주 시작 요일을 '일요일' 기준으로 계산
+      const startWeekday = start.getDay();
+
+      const total = startWeekday + end.getDate(); const cells = Math.ceil(total/7)*7;
+      const eventsByDay = await loadMonthEvents(cal.cur);
+      for(let i=0;i<cells;i++){
+        const cell = document.createElement('div'); cell.className='cal-cell';
+        const dayNum = i - startWeekday + 1; const inMonth = dayNum>=1 && dayNum<=end.getDate();
+        const date = new Date(cal.cur.getFullYear(), cal.cur.getMonth(), inMonth? dayNum: 0);
+        const label = inMonth? dayNum: '';
+        const isToday = inMonth && (new Date().toDateString()===date.toDateString());
+        cell.innerHTML = `<div class="cal-day"><span>${label}</span>${isToday?'<span class="pill">Today</span>':''}</div><div class="cal-events"></div>`;
+        if(isToday) cell.classList.add('cal-today');
+        if(inMonth){
+          const key = ymd(date); const wrap = cell.querySelector('.cal-events');
+          const eventsOnThisDay = eventsByDay[key] || [];
+
+          eventsOnThisDay.forEach(ev => {
+            const item = document.createElement('div');
+            item.className = 'cal-event';
+            item.textContent = ev.title + (ev.where ? ` @ ${ev.where}` : '');
+            wrap.appendChild(item);
+          });
+
+          cell.addEventListener('click', () => {
+            if (eventsOnThisDay.length === 0 && !isAdmin(auth.currentUser)) {
+              return;
+            }
+
+            const modal = $('#event-modal');
+            const modalTitle = $('#modal-title');
+            const eventList = $('#modal-event-list');
+
+            modalTitle.textContent = `${key} 일정`;
+            eventList.innerHTML = '';
+
+            if (eventsOnThisDay.length > 0) {
+              eventsOnThisDay.forEach(ev => {
+                const li = document.createElement('li');
+                const adminButtons = isAdmin(auth.currentUser)
+                  ? `<div class="row-end">
+                      <button class="tab" data-type="event-edit" data-id="${ev.id}">수정</button>
+                      <button class="tab" data-type="event-del" data-id="${ev.id}">삭제</button>
+                    </div>`
+                  : '';
+
+                li.innerHTML = `<span>${ev.title} ${ev.where ? `(@ ${ev.where})` : ''}</span> ${adminButtons}`;
+                eventList.appendChild(li);
+              });
+            } else {
+              eventList.innerHTML = `<li>일정이 없습니다.</li>`;
+            }
+            
+            modal.classList.remove('hidden');
+          });
+        }
+        grid.appendChild(cell);
+      }
+    }
+
+    $('#modal-close').addEventListener('click', () => {
+      $('#event-modal').classList.add('hidden');
+    });
+
+    async function addEvent(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const dateStr = prompt('날짜 (YYYY-MM-DD)'); if(!dateStr) return;
+      const title = prompt('이벤트 제목'); if(!title) return;
+      const whereTo = prompt('장소(optional)')||''; const note = prompt('비고(optional)')||'';
+      // 이벤트를 저장할 때 UTC 정오로 저장하여 시간대 문제를 방지합니다.
+      await addDoc(col('events'), { title, where: whereTo, note, date: new Date(dateStr + 'T12:00:00Z'), createdAt: serverTimestamp() });
+      await renderCalendar();
+    }
+    const btnAddEvent = document.getElementById('btnAddEvent'); if(btnAddEvent){ btnAddEvent.addEventListener('click', addEvent); }
+    const calPrev = document.getElementById('calPrev'); const calNext = document.getElementById('calNext');
+    if(calPrev&&calNext){ calPrev.addEventListener('click', ()=>{ cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth()-1, 1); renderCalendar(); }); calNext.addEventListener('click', ()=>{ cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth()+1, 1); renderCalendar(); }); }
+
+    go(routeFromPath());
+</script>
+
+</body>
+</html>

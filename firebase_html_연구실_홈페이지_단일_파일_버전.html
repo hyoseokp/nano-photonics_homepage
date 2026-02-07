@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nanophotonics Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0d12; --card:#11151d; --muted:#8a98b2; --text:#e8edf7; --brand:#5aa2ff; --brand-2:#7cf3d2; --line:#1c2432;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1080px;margin:0 auto;padding:24px}
+    header{position:sticky;top:0;backdrop-filter:saturate(140%) blur(10px);background:rgba(11,13,18,0.72);border-bottom:1px solid var(--line);z-index:20}
+    .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px}
+    .logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.2px}
+    .logo-badge{width:28px;height:28px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand-2));box-shadow:var(--shadow)}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap}
+    .tab{padding:8px 12px;border-radius:12px;border:1px solid var(--line);color:var(--muted)}
+    .tab.active,.tab:hover{color:var(--text);border-color:#2a3446;background:rgba(122,160,255,0.08)}
+    .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch;margin-top:24px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .card h3{margin:0 0 12px;font-size:18px}
+    .card .body{padding:18px}
+    .muted{color:var(--muted)}
+    .cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--brand),var(--brand-2));color:#051019;border:none;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .list{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+    .list li{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#0f131a}
+    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px}
+    .row{display:flex;gap:12px;align-items:center}
+    .row-end{display:flex;gap:8px;align-items:center}
+    .plus{display:inline-flex;width:28px;height:28px;border-radius:10px;border:1px solid var(--line);align-items:center;justify-content:center;color:var(--muted);background:#0e1219;cursor:pointer}
+    .grid{display:grid;gap:24px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .footer{margin:40px 0 20px;color:var(--muted);text-align:center}
+    .hidden{display:none!important}
+    .tag{font-size:11px;border:1px solid var(--line);padding:4px 8px;border-radius:999px;color:var(--muted)}
+    .title-xl{font-size:28px;margin:0 0 8px}
+    .title-lg{font-size:22px;margin:0 0 8px}
+    .desc{color:var(--muted);line-height:1.6}
+    .hr{height:1px;background:var(--line);margin:16px 0}
+    @media(max-width:900px){.hero{grid-template-columns:1fr}} 
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav container">
+      <div class="logo"><span class="logo-badge"></span> <span>Nanophotonics Lab</span></div>
+      <nav class="tabs">
+        <a class="tab active" href="#home" data-page="home">Home</a>
+        <a class="tab" href="#members" data-page="members">Members</a>
+        <a class="tab" href="#research" data-page="research">Research</a>
+        <a class="tab" href="#publications" data-page="publications">Publications</a>
+        <a class="tab" href="#notices" data-page="notices">Notices</a>
+      </nav>
+      <div class="row-end">
+        <span id="userEmail" class="pill hidden"></span>
+        <button id="signInBtn" class="cta">Admin</button>
+        <button id="signOutBtn" class="tab hidden">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- HOME -->
+    <section id="page-home">
+      <div class="hero">
+        <div class="card">
+          <div class="body">
+            <p class="tag">About</p>
+            <h1 class="title-xl">Advanced Nanophotonics & Metasurfaces</h1>
+            <p class="desc">우리는 광학 소재, 메타표면, 계산 영상, 역설계 및 인공지능 기반 광학 설계를 연구합니다. 대학/산업 협업을 통해 실제 문제를 해결하고 차세대 이미징·센싱 기술을 개발합니다.</p>
+            <div class="hr"></div>
+            <div class="grid cols-3">
+              <div><div class="muted">PI</div><div class="title-lg" id="piName">Your Name</div></div>
+              <div><div class="muted">Location</div><div class="title-lg" id="locationText">Daejeon, Korea</div></div>
+              <div><div class="muted">Openings</div><div class="title-lg">We are hiring → <a href="#notices" class="tab">Apply</a></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="body">
+            <p class="tag">Contact</p>
+            <h3 class="title-lg">Get in touch</h3>
+            <p class="desc">Email: <a id="contactEmail" href="mailto:lab@example.edu">lab@example.edu</a><br>Address: 99 Daehak-ro, Yuseong-gu, Daejeon</p>
+            <div class="hr"></div>
+            <button class="cta" onclick="window.location.href='#notices'">Join the Lab</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:24px">
+        <div class="card">
+          <div class="body">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <h3 class="title-lg">Latest Notices</h3>
+              <button class="plus" title="All notices" onclick="go('notices')">+</button>
+            </div>
+            <ul id="homeNotices" class="list"></ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="body">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <h3 class="title-lg">Recent Publications</h3>
+              <button class="plus" title="All publications" onclick="go('publications')">+</button>
+            </div>
+            <ul id="homePubs" class="list"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section id="page-members" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Members</h2>
+        <button id="btnAddMember" class="cta hidden">+ Add Member</button>
+      </div>
+      <p class="desc">구성원 목록입니다. 학위과정/박사후연구원/학부연구생으로 구분됩니다.</p>
+      <div id="membersWrap" class="grid cols-3" style="margin-top:16px"></div>
+    </section>
+
+    <!-- RESEARCH -->
+    <section id="page-research" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Research</h2>
+        <button id="btnAddTopic" class="cta hidden">+ Add Topic</button>
+      </div>
+      <div id="researchWrap" class="grid cols-2" style="margin-top:16px"></div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section id="page-publications" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Publications</h2>
+        <button id="btnAddPub" class="cta hidden">+ Add Publication</button>
+      </div>
+      <ul id="pubList" class="list" style="margin-top:16px"></ul>
+    </section>
+
+    <!-- NOTICES -->
+    <section id="page-notices" class="hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 class="title-lg">Notices</h2>
+        <button id="btnAddNotice" class="cta hidden">+ New Notice</button>
+      </div>
+      <ul id="noticeList" class="list" style="margin-top:16px"></ul>
+    </section>
+
+    <!-- ADMIN MODALS (simple prompts) -->
+  </main>
+
+  <footer class="footer container">© <span id="year"></span> Nanophotonics Lab. All rights reserved.</footer>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    // 1) Firebase SDK (v10+ modular)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, getDoc, doc, query, orderBy, limit, serverTimestamp, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    // 2) Your Firebase config ——— TODO: 채워 넣으세요
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "",
+      appId: ""
+    };
+    const ADMIN_EMAILS = [
+      // 관리자 이메일만 등록 (여러 명 가능)
+      "pi@example.edu",
+      "you@example.com"
+    ];
+
+    // 3) Init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // 4) UI Helpers
+    const $ = (sel)=>document.querySelector(sel);
+    const $$ = (sel)=>document.querySelectorAll(sel);
+    const yearEl = $('#year'); yearEl.textContent = new Date().getFullYear();
+    const pages = {
+      home: $('#page-home'),
+      members: $('#page-members'),
+      research: $('#page-research'),
+      publications: $('#page-publications'),
+      notices: $('#page-notices'),
+    };
+    function go(name){
+      Object.values(pages).forEach(p=>p.classList.add('hidden'));
+      pages[name].classList.remove('hidden');
+      $$('.tab').forEach(t=>t.classList.remove('active'));
+      const current = [...$$('.tab')].find(t=>t.dataset.page===name);
+      if(current) current.classList.add('active');
+      history.replaceState(null, '', `#${name}`);
+    }
+
+    // 5) Auth
+    const signInBtn = $('#signInBtn');
+    const signOutBtn = $('#signOutBtn');
+    const userEmail = $('#userEmail');
+    const provider = new GoogleAuthProvider();
+
+    async function signIn(){ try{ await signInWithPopup(auth, provider); }catch(e){ alert(e.message); } }
+    async function doSignOut(){ try{ await signOut(auth); }catch(e){ alert(e.message);} }
+
+    signInBtn.addEventListener('click', signIn);
+    signOutBtn.addEventListener('click', doSignOut);
+
+    function isAdmin(user){ return !!user && ADMIN_EMAILS.includes(user.email); }
+
+    onAuthStateChanged(auth, (user)=>{
+      if(user){
+        userEmail.textContent = user.email;
+        userEmail.classList.remove('hidden');
+        signInBtn.classList.add('hidden');
+        signOutBtn.classList.remove('hidden');
+        // Admin buttons
+        const show = isAdmin(user);
+        ['btnAddNotice','btnAddPub','btnAddMember','btnAddTopic'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){ show ? el.classList.remove('hidden') : el.classList.add('hidden'); }
+        });
+      } else {
+        userEmail.classList.add('hidden');
+        signInBtn.classList.remove('hidden');
+        signOutBtn.classList.add('hidden');
+        ['btnAddNotice','btnAddPub','btnAddMember','btnAddTopic'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el){ el.classList.add('hidden'); }
+        });
+      }
+    });
+
+    // 6) Firestore helpers
+    const col = (name)=>collection(db, name);
+    const fmtDate = (ts)=> ts?.toDate ? ts.toDate().toLocaleDateString() : new Date(ts).toLocaleDateString();
+
+    // 7) Notices — collection: "notices" {title, body, createdAt}
+    async function loadHomeNotices(){
+      const q = query(col('notices'), orderBy('createdAt','desc'), limit(5));
+      const snap = await getDocs(q);
+      const list = $('#homeNotices'); list.innerHTML='';
+      snap.forEach(d=>{
+        const n = d.data();
+        const li = document.createElement('li');
+        li.innerHTML = `<div class="row" style="gap:10px"><span class="pill">${fmtDate(n.createdAt)}</span><strong>${n.title}</strong></div>`;
+        list.appendChild(li);
+      });
+    }
+    async function loadNotices(){
+      const q = query(col('notices'), orderBy('createdAt','desc'));
+      const snap = await getDocs(q);
+      const list = $('#noticeList'); list.innerHTML='';
+      snap.forEach(d=>{
+        const n = d.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="flex:1">
+            <div class="row" style="justify-content:space-between">
+              <strong>${n.title}</strong>
+              <span class="pill">${fmtDate(n.createdAt)}</span>
+            </div>
+            <div class="muted" style="margin-top:6px">${n.body?.slice(0,160) ?? ''}</div>
+          </div>
+          <div class="row-end">
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="notice-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="notice-del">Delete</button>`:''}
+          </div>`;
+        list.appendChild(li);
+      });
+    }
+
+    async function addNotice(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('제목'); if(!title) return;
+      const body = prompt('내용 (간단 요약)');
+      await addDoc(col('notices'), { title, body: body||'', createdAt: serverTimestamp() });
+      await loadHomeNotices(); await loadNotices();
+    }
+
+    // 8) Publications — collection: "publications" {title, authors, venue, year, link, createdAt}
+    async function loadHomePubs(){
+      const q = query(col('publications'), orderBy('createdAt','desc'), limit(5));
+      const snap = await getDocs(q);
+      const list = $('#homePubs'); list.innerHTML='';
+      snap.forEach(d=>{
+        const p = d.data();
+        const li = document.createElement('li');
+        const right = `<div class="row-end"><span class="pill">${p.venue || ''} ${p.year||''}</span>${p.link?`<a class="tab" href="${p.link}" target="_blank">Link</a>`:''}</div>`;
+        li.innerHTML = `<div><strong>${p.title}</strong><div class="muted">${p.authors||''}</div></div>${right}`;
+        list.appendChild(li);
+      });
+    }
+    async function loadPubs(){
+      const q = query(col('publications'), orderBy('year','desc'));
+      const snap = await getDocs(q);
+      const list = $('#pubList'); list.innerHTML='';
+      snap.forEach(d=>{
+        const p = d.data();
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <div style="flex:1">
+            <strong>${p.title}</strong>
+            <div class="muted">${p.authors||''}</div>
+            <div class="muted">${p.venue||''} ${p.year||''}</div>
+          </div>
+          <div class="row-end">
+            ${p.link?`<a class="tab" href="${p.link}" target="_blank">PDF</a>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="pub-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="pub-del">Delete</button>`:''}
+          </div>`;
+        list.appendChild(li);
+      });
+    }
+    async function addPub(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('논문 제목'); if(!title) return;
+      const authors = prompt('저자 (comma)')||'';
+      const venue = prompt('학회/저널')||'';
+      const year = parseInt(prompt('연도'),10)||new Date().getFullYear();
+      const link = prompt('링크(URL)')||'';
+      await addDoc(col('publications'), { title, authors, venue, year, link, createdAt: serverTimestamp() });
+      await loadHomePubs(); await loadPubs();
+    }
+
+    // 9) Members — collection: "members" {name, role, bio, email, site, avatar}
+    async function loadMembers(){
+      const q = query(col('members'), orderBy('role','asc'));
+      const snap = await getDocs(q);
+      const wrap = $('#membersWrap'); wrap.innerHTML='';
+      snap.forEach(d=>{
+        const m = d.data();
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div class="body">
+            <div class="row" style="gap:12px">
+              <img src="${m.avatar||'https://api.dicebear.com/8.x/initials/svg?seed='+encodeURIComponent(m.name||'')}&backgroundType=gradientLinear" alt="avatar" width="54" height="54" style="border-radius:14px;border:1px solid var(--line)"/>
+              <div>
+                <strong>${m.name||''}</strong>
+                <div class="muted">${m.role||''}</div>
+              </div>
+            </div>
+            <div class="desc" style="margin-top:8px">${m.bio||''}</div>
+            <div class="row" style="gap:8px;margin-top:10px">
+              ${m.email?`<a class="pill" href="mailto:${m.email}">Email</a>`:''}
+              ${m.site?`<a class="pill" href="${m.site}" target="_blank">Website</a>`:''}
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="member-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="member-del">Delete</button>`:''}
+            </div>
+          </div>`;
+        wrap.appendChild(card);
+      });
+    }
+    async function addMember(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const name = prompt('이름'); if(!name) return;
+      const role = prompt('직함/과정 (예: PhD, MS, Postdoc)')||'';
+      const bio = prompt('간단 소개')||'';
+      const email = prompt('이메일(optional)')||'';
+      const site = prompt('개인 홈페이지(optional)')||'';
+      const avatar = prompt('사진 URL(optional)')||'';
+      await addDoc(col('members'), { name, role, bio, email, site, avatar });
+      await loadMembers();
+    }
+
+    // 10) Research topics — collection: "research" {title, summary, tags:[], cover}
+    async function loadResearch(){
+      const q = query(col('research'), orderBy('title','asc'));
+      const snap = await getDocs(q);
+      const wrap = $('#researchWrap'); wrap.innerHTML='';
+      snap.forEach(d=>{
+        const r = d.data();
+        const card = document.createElement('div');
+        card.className='card';
+        card.innerHTML = `
+          <div class="body">
+            <img src="${r.cover||'https://picsum.photos/640/360?blur=2'}" alt="cover" style="width:100%;height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--line)"/>
+            <h3 class="title-lg" style="margin-top:10px">${r.title}</h3>
+            <p class="desc">${r.summary||''}</p>
+            <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+              ${(r.tags||[]).map(t=>`<span class='tag'>${t}</span>`).join('')}
+            </div>
+            <div class="row-end" style="margin-top:10px">
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="topic-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="topic-del">Delete</button>`:''}
+            </div>
+          </div>`;
+        wrap.appendChild(card);
+      });
+    }
+    async function addTopic(){
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      const title = prompt('주제명'); if(!title) return;
+      const summary = prompt('요약')||'';
+      const tags = (prompt('태그(콤마 구분)')||'').split(',').map(s=>s.trim()).filter(Boolean);
+      const cover = prompt('커버 이미지 URL(optional)')||'';
+      await addDoc(col('research'), { title, summary, tags, cover });
+      await loadResearch();
+    }
+
+    // 11) Listeners for admin action buttons (event delegation)
+    document.addEventListener('click', async (e)=>{
+      const t = e.target;
+      if(!(t instanceof HTMLElement)) return;
+      const type = t.dataset.type; const id = t.dataset.id;
+      if(!type) return;
+      if(!isAdmin(auth.currentUser)) return alert('관리자만 가능합니다.');
+      if(type.endsWith('del')){
+        if(confirm('삭제하시겠습니까?')){
+          const coll = type.startsWith('notice')?'notices': type.startsWith('pub')?'publications': type.startsWith('member')?'members':'research';
+          await deleteDoc(doc(db, coll, id));
+          if(coll==='notices'){ await loadHomeNotices(); await loadNotices(); }
+          if(coll==='publications'){ await loadHomePubs(); await loadPubs(); }
+          if(coll==='members'){ await loadMembers(); }
+          if(coll==='research'){ await loadResearch(); }
+        }
+      }
+      if(type.endsWith('edit')){
+        // extremely simple inline editors via prompt
+        const coll = type.startsWith('notice')?'notices': type.startsWith('pub')?'publications': type.startsWith('member')?'members':'research';
+        const ref = doc(db, coll, id); const snap = await getDoc(ref); const cur = snap.data();
+        if(coll==='notices'){
+          const title = prompt('제목', cur.title)||cur.title;
+          const body = prompt('내용 요약', cur.body)||cur.body;
+          await updateDoc(ref, { title, body });
+          await loadHomeNotices(); await loadNotices();
+        }
+        if(coll==='publications'){
+          const title = prompt('논문 제목', cur.title)||cur.title;
+          const authors = prompt('저자', cur.authors)||cur.authors;
+          const venue = prompt('학회/저널', cur.venue)||cur.venue;
+          const year = parseInt(prompt('연도', cur.year),10)||cur.year;
+          const link = prompt('링크', cur.link)||cur.link;
+          await updateDoc(ref, { title, authors, venue, year, link });
+          await loadHomePubs(); await loadPubs();
+        }
+        if(coll==='members'){
+          const name = prompt('이름', cur.name)||cur.name;
+          const role = prompt('직함/과정', cur.role)||cur.role;
+          const bio = prompt('소개', cur.bio)||cur.bio;
+          const email = prompt('이메일', cur.email)||cur.email;
+          const site = prompt('개인홈페이지', cur.site)||cur.site;
+          const avatar = prompt('사진 URL', cur.avatar)||cur.avatar;
+          await updateDoc(ref, { name, role, bio, email, site, avatar });
+          await loadMembers();
+        }
+        if(coll==='research'){
+          const title = prompt('주제명', cur.title)||cur.title;
+          const summary = prompt('요약', cur.summary)||cur.summary;
+          const tags = (prompt('태그(콤마)', (cur.tags||[]).join(','))||'').split(',').map(s=>s.trim()).filter(Boolean);
+          const cover = prompt('커버 URL', cur.cover)||cur.cover;
+          await updateDoc(ref, { title, summary, tags, cover });
+          await loadResearch();
+        }
+      }
+    });
+
+    // 12) Wire admin create buttons
+    $('#btnAddNotice').addEventListener('click', addNotice);
+    $('#btnAddPub').addEventListener('click', addPub);
+    $('#btnAddMember').addEventListener('click', addMember);
+    $('#btnAddTopic').addEventListener('click', addTopic);
+
+    // 13) Routing
+    $$('.tabs .tab').forEach(t=> t.addEventListener('click', (e)=>{
+      const page = t.dataset.page; if(page){ go(page); }
+    }));
+    const initial = location.hash?.replace('#','') || 'home';
+    go(initial);
+
+    // 14) Initial loads
+    await Promise.all([
+      loadHomeNotices(), loadHomePubs(), loadNotices(), loadPubs(), loadMembers(), loadResearch()
+    ]);
+
+  </script>
+
+  <!-- =========================
+    FIREBASE SECURITY RULES (Firestore)
+    - Firebase 콘솔 > Firestore Database > Rules 탭에 붙여넣으세요.
+    - ADMIN_EMAILS의 이메일만 쓰기 권한을 가지도록 제한합니다.
+  ========================== -->
+  <!--
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      function isAdmin() {
+        return request.auth != null && (
+          request.auth.token.email in ["pi@example.edu", "you@example.com"]
+        );
+      }
+
+      match /{document=**} {
+        allow read: if true;              // 누구나 읽기 가능
+        allow write: if isAdmin();        // 관리자만 쓰기 가능
+      }
+    }
+  }
+  -->
+
+  <!-- =========================
+    간단한 배포 가이드
+    1) Firebase 프로젝트 생성 → Hosting/Firestore/Auth(Google) 활성화
+    2) 위 firebaseConfig 채우기, ADMIN_EMAILS에 관리자 이메일 등록
+    3) Firestore Rules를 위 규칙으로 설정 후 Publish
+    4) npm i -g firebase-tools → firebase login → firebase init hosting
+    5) public/ 폴더에 이 파일 저장 (예: index.html), single-page라면 SPA 설정(Y)
+    6) firebase deploy
+  ========================== -->
+</body>
+</html>

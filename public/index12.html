@@ -1,0 +1,633 @@
+<script type="module">
+  // Firebase SDK (v10+ modular)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, getDoc, doc, query, orderBy, limit, serverTimestamp, updateDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAO5gm1Yf94pH8v6Gzby_RCmvunbKvaAU0",
+    authDomain: "cnu-nanophotonics-lab.firebaseapp.com",
+    projectId: "cnu-nanophotonics-lab",
+    storageBucket: "cnu-nanophotonics-lab.firebasestorage.app",
+    messagingSenderId: "22902892296",
+    appId: "1:22902892296:web:f5bf24ac7f13f244ee6ebd",
+    measurementId: "G-4R655EPF3C"
+  };
+  const ADMIN_EMAILS = ["cnunanophotonics@gmail.com", "yeonsang.park@cnu.ac.kr"];
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const storage = getStorage(app);
+
+  // UI helpers
+  const $ = (sel) => document.querySelector(sel);
+  const $$ = (sel) => document.querySelectorAll(sel);
+  const yearEl = $('#year');
+  yearEl.textContent = new Date().getFullYear();
+  const pages = {
+    home: $('#page-home'),
+    members: $('#page-members'),
+    research: $('#page-research'),
+    publications: $('#page-publications'),
+    notices: $('#page-notices')
+  };
+
+  // Routing
+  function routeFromPath() {
+    const path = location.pathname.replace(/\/$/, '') || '/';
+    const map = {
+      '/': 'home',
+      '/members': 'members',
+      '/research': 'research',
+      '/publications': 'publications',
+      '/notices': 'notices'
+    };
+    return map[path] || 'home';
+  }
+  async function go(name) {
+    Object.values(pages).forEach(p => p.classList.add('hidden'));
+    if (!pages[name]) name = 'home';
+    pages[name].classList.remove('hidden');
+    $$('.tabs .tab').forEach(t => t.classList.toggle('active', t.dataset.page === name));
+    try {
+      if (name === 'home') {
+        await Promise.all([loadHomeNotices(), loadHomePubs(), renderCalendar()]);
+      } else if (name === 'members') {
+        await loadMembers();
+      } else if (name === 'research') {
+        await loadResearch();
+      } else if (name === 'publications') {
+        await loadPubs();
+      } else if (name === 'notices') {
+        await loadNotices();
+      }
+    } catch (e) {
+      console.error(`Error loading data for page ${name}:`, e);
+    }
+  }
+  window.navTo = function(name) {
+    const path = name === 'home' ? '/' : `/${name}`;
+    history.pushState({
+      page: name
+    }, '', path);
+    go(name);
+    window.scrollTo({
+      top: 0,
+      behavior: 'instant'
+    });
+  }
+  $$('.tabs .tab').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const page = a.dataset.page;
+      if (!page) return;
+      e.preventDefault();
+      navTo(page);
+    });
+  });
+  window.addEventListener('popstate', () => {
+    go(routeFromPath());
+  });
+
+  // Auth
+  const signInBtn = $('#signInBtn');
+  const signOutBtn = $('#signOutBtn');
+  const userEmail = $('#userEmail');
+  const provider = new GoogleAuthProvider();
+
+  async function signIn() {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+  async function doSignOut() {
+    try {
+      await signOut(auth);
+    } catch (e) {
+      alert(e.message);
+    }
+  }
+
+  signInBtn.addEventListener('click', signIn);
+  signOutBtn.addEventListener('click', doSignOut);
+
+  function isAdmin(user) {
+    return !!user && ADMIN_EMAILS.includes(user.email);
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      if (isAdmin(user)) {
+        console.log(`관리자 ${user.email} 님이 로그인했습니다.`);
+        userEmail.textContent = user.email;
+        userEmail.classList.remove('hidden');
+        signOutBtn.classList.remove('hidden');
+        const mainSignInBtn = $('#signInBtn');
+        if (mainSignInBtn) mainSignInBtn.classList.add('hidden');
+        ['btnAddNotice', 'btnAddPub', 'btnAddMember', 'btnAddTopic', 'btnAddEvent'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('hidden');
+        });
+      } else {
+        console.warn(`권한 없는 사용자(${user.email})가 로그인을 시도했습니다.`);
+        alert(`접근 권한이 없는 계정입니다. 관리자 계정으로 로그인해주세요.\n\n(시도한 계정: ${user.email})`);
+        signOut(auth);
+      }
+    } else {
+      console.log('로그아웃 상태입니다.');
+      userEmail.classList.add('hidden');
+      signOutBtn.classList.add('hidden');
+      const mainSignInBtn = $('#signInBtn');
+      if (mainSignInBtn) mainSignInBtn.classList.remove('hidden');
+      ['btnAddNotice', 'btnAddPub', 'btnAddMember', 'btnAddTopic', 'btnAddEvent'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+    }
+  });
+
+  // Firestore helpers
+  const col = (name) => collection(db, name);
+  const fmtDate = (ts) => ts?.toDate ? ts.toDate().toLocaleDateString() : new Date(ts).toLocaleDateString();
+
+  // Notices
+  async function loadHomeNotices() {
+    const q = query(col('notices'), orderBy('createdAt', 'desc'), limit(5));
+    const snap = await getDocs(q);
+    const list = $('#homeNotices');
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const n = d.data();
+      const li = document.createElement('li');
+      li.innerHTML = `<div class="row" style="gap:10px"><span class="pill">${fmtDate(n.createdAt)}</span><strong>${n.title}</strong></div>`;
+      list.appendChild(li);
+    });
+  }
+  async function loadNotices() {
+    const q = query(col('notices'), orderBy('createdAt', 'desc'));
+    const snap = await getDocs(q);
+    const list = $('#noticeList');
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const n = d.data();
+      const li = document.createElement('li');
+      li.innerHTML = `
+          <div style="flex:1">
+            <div class="row" style="justify-content:space-between">
+              <strong>${n.title}</strong>
+              <span class="pill">${fmtDate(n.createdAt)}</span>
+            </div>
+            <div class="muted" style="margin-top:6px">${n.body?.slice(0,160) ?? ''}</div>
+          </div>
+          <div class="row-end">
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="notice-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="notice-del">Delete</button>`:''}
+          </div>`;
+      list.appendChild(li);
+    });
+  }
+  async function addNotice() {
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+    const title = prompt('제목');
+    if (!title) return;
+    const body = prompt('내용 (간단 요약)');
+    await addDoc(col('notices'), {
+      title,
+      body: body || '',
+      createdAt: serverTimestamp()
+    });
+    await loadHomeNotices();
+    await loadNotices();
+  }
+
+  // Publications
+  async function loadHomePubs() {
+    const q = query(col('publications'), orderBy('createdAt', 'desc'), limit(5));
+    const snap = await getDocs(q);
+    const list = $('#homePubs');
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const li = document.createElement('li');
+      const right = `<div class="row-end"><span class="pill">${p.venue || ''} ${p.year||''}</span>${p.link?`<a class="tab" href="${p.link}" target="_blank">Link</a>`:''}</div>`;
+      li.innerHTML = `<div><strong>${p.title}</strong><div class="muted">${p.authors||''}</div></div>${right}`;
+      list.appendChild(li);
+    });
+  }
+  async function loadPubs() {
+    const q = query(col('publications'), orderBy('year', 'desc'));
+    const snap = await getDocs(q);
+    const list = $('#pubList');
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const p = d.data();
+      const li = document.createElement('li');
+      li.innerHTML = `
+          <div style="flex:1">
+            <strong>${p.title}</strong>
+            <div class="muted">${p.authors||''}</div>
+            <div class="muted">${p.venue||''} ${p.year||''}</div>
+          </div>
+          <div class="row-end">
+            ${p.link?`<a class="tab" href="${p.link}" target="_blank">PDF</a>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="pub-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="pub-del">Delete</button>`:''}
+          </div>`;
+      list.appendChild(li);
+    });
+  }
+  async function addPub() {
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+    const title = prompt('논문 제목');
+    if (!title) return;
+    const authors = prompt('저자 (comma)') || '';
+    const venue = prompt('학회/저널') || '';
+    const year = parseInt(prompt('연도'), 10) || new Date().getFullYear();
+    const link = prompt('링크(URL)') || '';
+    await addDoc(col('publications'), {
+      title,
+      authors,
+      venue,
+      year,
+      link,
+      createdAt: serverTimestamp()
+    });
+    await loadHomePubs();
+    await loadPubs();
+  }
+
+  // Members
+  async function loadMembers() {
+    $('#professors').innerHTML = '';
+    $('#phd-students').innerHTML = '';
+    $('#masters-students').innerHTML = '';
+    $('#undergrads').innerHTML = '';
+
+    const q = query(col('members'), orderBy('role', 'desc'));
+    const snap = await getDocs(q);
+
+    snap.forEach(d => {
+      const m = d.data();
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="body">
+          <div class="row" style="gap:12px">
+            <img src="${m.avatar||'https://api.dicebear.com/8.x/initials/svg?seed='+encodeURIComponent(m.name||'')}&backgroundType=gradientLinear" alt="avatar" width="54" height="54" style="border-radius:14px;border:1px solid var(--line)"/>
+            <div>
+              <strong>${m.name||''}</strong>
+              <div class="muted">${m.role||''}</div>
+            </div>
+          </div>
+          <div class="desc" style="margin-top:8px">${m.bio||''}</div>
+          <div class="row" style="gap:8px;margin-top:10px">
+            ${m.email?`<a class="pill" href="mailto:${m.email}">Email</a>`:''}
+            ${m.site?`<a class="pill" href="${m.site}" target="_blank">Website</a>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="member-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="member-del">Delete</button>`:''}
+          </div>
+        </div>`;
+
+      switch (m.role) {
+        case '교수':
+          $('#professors').appendChild(card);
+          break;
+        case '박사과정':
+          $('#phd-students').appendChild(card);
+          break;
+        case '석사과정':
+          $('#masters-students').appendChild(card);
+          break;
+        case '학부생':
+          $('#undergrads').appendChild(card);
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
+  // 파일 업로드를 처리하는 함수
+  async function uploadImage(file) {
+    if (!file) return null;
+    const storageRef = ref(storage, `members/${Date.now()}_${file.name}`);
+    await uploadBytes(storageRef, file);
+    return getDownloadURL(storageRef);
+  }
+  
+  async function addMember(){
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+    
+    const name = prompt('이름'); if (!name) return;
+    const role = prompt('직함/과정 (선택: 교수, 박사과정, 석사과정, 학부생)');
+    if(!['교수', '박사과정', '석사과정', '학부생'].includes(role)) {
+      return alert('유효한 직함을 입력해주세요.');
+    }
+    const bio = prompt('간단 소개') || '';
+    const email = prompt('이메일(optional)') || '';
+    const site = prompt('개인 홈페이지(optional)') || '';
+
+    let avatar = 'https://api.dicebear.com/8.x/initials/svg?seed=' + encodeURIComponent(name); // 기본 아바타
+    const hasImage = confirm('사진을 업로드하시겠습니까? (취소 시 기본 아바타 사용)');
+    if (hasImage) {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        
+        await new Promise((resolve) => {
+            fileInput.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    try {
+                        console.log('이미지 업로드 중...');
+                        avatar = await uploadImage(file);
+                        console.log('이미지 업로드 완료:', avatar);
+                        resolve();
+                    } catch (error) {
+                        alert('이미지 업로드 중 오류가 발생했습니다.');
+                        console.error('이미지 업로드 오류:', error);
+                        resolve();
+                    }
+                } else {
+                    resolve();
+                }
+            };
+            fileInput.click();
+        });
+    }
+
+    await addDoc(col('members'), { name, role, bio, email, site, avatar });
+    await loadMembers();
+  }
+
+  // Research topics
+  async function loadResearch() {
+    const q = query(col('research'), orderBy('title', 'asc'));
+    const snap = await getDocs(q);
+    const wrap = $('#researchWrap');
+    wrap.innerHTML = '';
+    snap.forEach(d => {
+      const r = d.data();
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+          <div class="body">
+            <img src="${r.cover||'https://picsum.photos/640/360?blur=2'}" alt="cover" style="width:100%;height:180px;object-fit:cover;border-radius:12px;border:1px solid var(--line)"/>
+            <h3 class="title-lg" style="margin-top:10px">${r.title}</h3>
+            <p class="desc">${r.summary||''}</p>
+            <div class="row" style="flex-wrap:wrap;gap:6px;margin-top:8px">
+              ${(r.tags||[]).map(t=>`<span class='tag'>${t}</span>`).join('')}
+            </div>
+            <div class="row-end" style="margin-top:10px">
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="topic-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="topic-del">Delete</button>`:''}
+            </div>
+          </div>`;
+      wrap.appendChild(card);
+    });
+  }
+  async function addTopic() {
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+    const title = prompt('주제명');
+    if (!title) return;
+    const summary = prompt('요약') || '';
+    const tags = (prompt('태그(콤마 구분)') || '').split(',').map(s => s.trim()).filter(Boolean);
+    const cover = prompt('커버 이미지 URL(optional)') || '';
+    await addDoc(col('research'), {
+      title,
+      summary,
+      tags,
+      cover
+    });
+    await loadResearch();
+  }
+
+  // Event delegation for admin edits
+  document.addEventListener('click', async (e) => {
+    const t = e.target;
+    if (!(t instanceof HTMLElement)) return;
+    const type = t.dataset.type;
+    const id = t.dataset.id;
+    if (!type) return;
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 가능합니다.');
+    if (type.endsWith('del')) {
+      if (confirm('삭제하시겠습니까?')) {
+        const coll = type.startsWith('notice') ? 'notices' : type.startsWith('pub') ? 'publications' : type.startsWith('member') ? 'members' : 'research';
+        await deleteDoc(doc(db, coll, id));
+        if (coll === 'notices') {
+          await loadHomeNotices();
+          await loadNotices();
+        }
+        if (coll === 'publications') {
+          await loadHomePubs();
+          await loadPubs();
+        }
+        if (coll === 'members') {
+          await loadMembers();
+        }
+        if (coll === 'research') {
+          await loadResearch();
+        }
+      }
+    }
+    if (type.endsWith('edit')) {
+      const coll = type.startsWith('notice') ? 'notices' : type.startsWith('pub') ? 'publications' : type.startsWith('member') ? 'members' : 'research';
+      const ref = doc(db, coll, id);
+      const snap = await getDoc(ref);
+      const cur = snap.data();
+      if (coll === 'notices') {
+        const title = prompt('제목', cur.title) || cur.title;
+        const body = prompt('내용 요약', cur.body) || cur.body;
+        await updateDoc(ref, {
+          title,
+          body
+        });
+        await loadHomeNotices();
+        await loadNotices();
+      }
+      if (coll === 'publications') {
+        const title = prompt('논문 제목', cur.title) || cur.title;
+        const authors = prompt('저자', cur.authors) || cur.authors;
+        const venue = prompt('학회/저널', cur.venue) || cur.venue;
+        const year = parseInt(prompt('연도', cur.year), 10) || cur.year;
+        const link = prompt('링크', cur.link) || cur.link;
+        await updateDoc(ref, {
+          title,
+          authors,
+          venue,
+          year,
+          link
+        });
+        await loadHomePubs();
+        await loadPubs();
+      }
+      if (coll === 'members') {
+        const name = prompt('이름', cur.name) || cur.name;
+        const role = prompt('직함/과정', cur.role) || cur.role;
+        const bio = prompt('소개', cur.bio) || cur.bio;
+        const email = prompt('이메일', cur.email) || cur.email;
+        const site = prompt('개인홈페이지', cur.site) || cur.site;
+        const hasImage = confirm('사진을 새로 업로드하시겠습니까? (취소 시 기존 사진 유지)');
+        let avatar = cur.avatar; // 기존 아바타 유지
+        if (hasImage) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            await new Promise((resolve) => {
+                fileInput.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        try {
+                            console.log('이미지 업로드 중...');
+                            avatar = await uploadImage(file);
+                            console.log('이미지 업로드 완료:', avatar);
+                            resolve();
+                        } catch (error) {
+                            alert('이미지 업로드 중 오류가 발생했습니다.');
+                            console.error('이미지 업로드 오류:', error);
+                            resolve();
+                        }
+                    } else {
+                        resolve();
+                    }
+                };
+                fileInput.click();
+            });
+        }
+        await updateDoc(doc(db, coll, id), { name, role, bio, email, site, avatar });
+        await loadMembers();
+      }
+      if (coll === 'research') {
+        const title = prompt('주제명', cur.title) || cur.title;
+        const summary = prompt('요약', cur.summary) || cur.summary;
+        const tags = (prompt('태그(콤마)', (cur.tags || []).join(',')) || '').split(',').map(s => s.trim()).filter(Boolean);
+        const cover = prompt('커버 URL', cur.cover) || cur.cover;
+        await updateDoc(ref, {
+          title,
+          summary,
+          tags,
+          cover
+        });
+        await loadResearch();
+      }
+    }
+  });
+
+  // Wire admin create buttons
+  $('#btnAddNotice').addEventListener('click', addNotice);
+  $('#btnAddPub').addEventListener('click', addPub);
+  $('#btnAddMember').addEventListener('click', addMember);
+  $('#btnAddTopic').addEventListener('click', addTopic);
+
+  // ===== Calendar logic =====
+  const cal = {
+    cur: new Date()
+  };
+  function ymd(d) {
+    return d.toISOString().slice(0, 10);
+  }
+  function firstOfMonth(d) {
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  }
+  function lastOfMonth(d) {
+    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  }
+  function monthTitle(d) {
+    return d.toLocaleString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+  async function loadMonthEvents(d) {
+    const start = firstOfMonth(d);
+    const end = lastOfMonth(d);
+    const qRef = query(col('events'), where('date', '>=', start), where('date', '<=', end), orderBy('date', 'asc'));
+    const snap = await getDocs(qRef);
+    const byDay = {};
+    snap.forEach(docu => {
+      const ev = docu.data();
+      const key = ymd(new Date(ev.date?.seconds ? ev.date.toDate() : ev.date));
+      (byDay[key] ||= []).push({
+        ...ev,
+        id: docu.id
+      });
+    });
+    return byDay;
+  }
+  async function renderCalendar() {
+    const titleEl = document.getElementById('calTitle');
+    if (!titleEl) return;
+    titleEl.textContent = monthTitle(cal.cur);
+    const grid = document.getElementById('calendarGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    const start = firstOfMonth(cal.cur);
+    const end = lastOfMonth(cal.cur);
+    const startWeekday = (start.getDay() + 6) % 7;
+    const total = startWeekday + end.getDate();
+    const cells = Math.ceil(total / 7) * 7;
+    const eventsByDay = await loadMonthEvents(cal.cur);
+    for (let i = 0; i < cells; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      const dayNum = i - startWeekday + 1;
+      const inMonth = dayNum >= 1 && dayNum <= end.getDate();
+      const date = new Date(cal.cur.getFullYear(), cal.cur.getMonth(), inMonth ? dayNum : 0);
+      const label = inMonth ? dayNum : '';
+      const isToday = inMonth && (new Date().toDateString() === date.toDateString());
+      cell.innerHTML = `<div class="cal-day"><span>${label}</span>${isToday?'<span class="pill">Today</span>':''}</div><div class="cal-events"></div>`;
+      if (isToday) cell.classList.add('cal-today');
+      if (inMonth) {
+        const key = ymd(date);
+        const wrap = cell.querySelector('.cal-events');
+        (eventsByDay[key] || []).forEach(ev => {
+          const item = document.createElement('div');
+          item.className = 'cal-event';
+          item.textContent = ev.title + (ev.where ? ` @ ${ev.where}` : '');
+          wrap.appendChild(item);
+        });
+        cell.addEventListener('click', () => {
+          const list = (eventsByDay[key] || []).map(e => `• ${e.title}${e.where?` @ ${e.where}`:''}${e.note?`\n  - ${e.note}`:''}`).join('\n') || '이 날짜에 이벤트가 없습니다.';
+          alert(`${key} 일정\n\n${list}`);
+        });
+      }
+      grid.appendChild(cell);
+    }
+  }
+  async function addEvent() {
+    if (!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+    const dateStr = prompt('날짜 (YYYY-MM-DD)');
+    if (!dateStr) return;
+    const title = prompt('이벤트 제목');
+    if (!title) return;
+    const whereTo = prompt('장소(optional)') || '';
+    const note = prompt('비고(optional)') || '';
+    await addDoc(col('events'), {
+      title,
+      where: whereTo,
+      note,
+      date: new Date(dateStr),
+      createdAt: serverTimestamp()
+    });
+    await renderCalendar();
+  }
+  const btnAddEvent = document.getElementById('btnAddEvent');
+  if (btnAddEvent) {
+    btnAddEvent.addEventListener('click', addEvent);
+  }
+  const calPrev = document.getElementById('calPrev');
+  const calNext = document.getElementById('calNext');
+  if (calPrev && calNext) {
+    calPrev.addEventListener('click', () => {
+      cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth() - 1, 1);
+      renderCalendar();
+    });
+    calNext.addEventListener('click', () => {
+      cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth() + 1, 1);
+      renderCalendar();
+    });
+  }
+
+  go(routeFromPath());
+</script>

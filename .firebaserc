@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "cnu-nanophotonics-lab"
+  },
+  "targets": {
+    "cnu-nanophotonics-lab": {
+      "hosting": {
+        "default": [
+          "cnu-nanophotonics-lab"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
