@@ -44,18 +44,36 @@
     try {
       const isMobile = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
       const rowEnd = document.querySelector('header .row-end');
-      if (!rowEnd) return;
-      if (isMobile) {
-        rowEnd.style.setProperty('display', 'none', 'important');
-        rowEnd.setAttribute('data-mobile-hidden', '1');
-      } else {
-        rowEnd.style.removeProperty('display');
-        rowEnd.removeAttribute('data-mobile-hidden');
+      if (rowEnd) {
+        if (isMobile) {
+          rowEnd.style.setProperty('display', 'none', 'important');
+          rowEnd.setAttribute('data-mobile-hidden', '1');
+        } else {
+          rowEnd.style.removeProperty('display');
+          rowEnd.removeAttribute('data-mobile-hidden');
+        }
       }
     } catch {}
   };
+
+  // Mobile header title: swap full/short to avoid wrapping and horizontal overflow
+  const applyMobileTitle = () => {
+    try {
+      const isMobile = window.matchMedia && window.matchMedia('(max-width: 430px)').matches;
+      const titleEl = document.querySelector('header .logo .site-title');
+      if (!titleEl) return;
+      const full = titleEl.getAttribute('data-full') || titleEl.textContent;
+      const short = titleEl.getAttribute('data-short') || full;
+      titleEl.textContent = isMobile ? short : full;
+    } catch {}
+  };
+
   applyMobileHeaderHides();
-  window.addEventListener('resize', applyMobileHeaderHides);
+  applyMobileTitle();
+  window.addEventListener('resize', () => {
+    applyMobileHeaderHides();
+    applyMobileTitle();
+  });
 
   // Wire mobile action buttons to existing ones
   const mapClick = (fromId, toId) => {
