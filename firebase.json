@@ -20,6 +20,18 @@
         ]
       },
       {
+        "source": "/styles/saas.v*.css",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      },
+      {
+        "source": "/scripts/mobile-menu.v*.js",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache" }
+        ]
+      },
+      {
         "source": "**/*.@(js|css|png|jpg|jpeg|gif|svg|webp)",
         "headers": [
           {
