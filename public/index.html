@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/styles/redesign.v2.css">
   <link rel="stylesheet" href="/styles/i18n.css">
   <script defer src="/scripts/reveal.v2.js"></script>
+  <script defer src="/scripts/mobile-menu.v2.js"></script>
   <style>
     :root{
       --bg:#f4f7fb;
@@ -182,11 +183,35 @@
     .modal-content {background: var(--card);padding: 24px;border-radius: var(--radius);box-shadow: var(--shadow);width: 90%;max-width: 500px;}
     .modal-content .list li {background: var(--bg);}
   </style>
-  <link rel="stylesheet" href="/styles/saas.v2.css">
+  <link rel="stylesheet" href="/styles/saas.v3.css">
 </head>
 <body>
 <a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Skip to content</a>
 <header style="height:120px; display:flex; align-items:center; justify-content:space-between; padding:0 40px; font-size:1.1rem;">
+  <button id="menuBtn" class="menu-btn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobileDrawer">
+    <span></span><span></span><span></span>
+  </button>
+  <div id="drawerOverlay" class="drawer-overlay" aria-hidden="true"></div>
+  <aside id="mobileDrawer" class="mobile-drawer" aria-label="Mobile menu">
+    <div class="drawer-head">
+      <div class="drawer-title">Menu</div>
+      <button type="button" class="drawer-close" aria-label="Close menu">×</button>
+    </div>
+    <nav class="drawer-nav">
+      <a class="drawer-link" href="/" data-page="home" data-i18n="nav.home">Home</a>
+      <a class="drawer-link" href="/members" data-page="members" data-i18n="nav.members">Members</a>
+      <a class="drawer-link" href="/research" data-page="research" data-i18n="nav.research">Research</a>
+      <a class="drawer-link" href="/publications" data-page="publications" data-i18n="nav.publications">Publications</a>
+      <a class="drawer-link" href="/notices" data-page="notices" data-i18n="nav.notices">Notices</a>
+    </nav>
+    <div class="drawer-actions">
+      <button id="mobileLangToggle" class="cta" type="button" data-i18n="a11y.languageToggle">Language</button>
+      <span id="mobileUserEmail" class="pill hidden"></span>
+      <button id="mobileAdminBtn" class="cta" type="button" data-i18n="common.admin">Admin</button>
+      <button id="mobileSignOutBtn" class="tab hidden" type="button" data-i18n="common.signOut">Sign out</button>
+    </div>
+  </aside>
+
   <div class="nav" style="display:flex; align-items:center; width:100%; justify-content:space-between;">
     <div class="logo" style="display:flex; align-items:center; font-size:1.5rem; font-weight:bold; margin-left: 20px;">
       <span class="logo-badge"></span>
@@ -208,6 +233,14 @@
     </div>
   </div>
 </header>
+<script>
+  // Wire close button (kept inline to avoid order issues)
+  (function(){
+    const closeBtn = document.querySelector('#mobileDrawer .drawer-close');
+    const btn = document.getElementById('menuBtn');
+    if(closeBtn && btn){ closeBtn.addEventListener('click', ()=>btn.click()); }
+  })();
+</script>
 
 <main id="main" class="container">
     <section id="page-home">
