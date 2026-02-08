@@ -69,24 +69,54 @@ a:focus-visible {
 
 /* Mobile: prevent header/nav breakage */
 @media (max-width: 768px) {
+  /* tighter page padding */
+  .container { padding: 14px !important; }
+
+  /* Header: keep compact + prevent logo oversized */
+  header { padding: 6px 0 !important; }
   header .nav.container {
     flex-direction: column !important;
-    align-items: flex-start !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 0 12px !important;
+  }
+
+  .logo { gap: 10px !important; }
+  .logo img { width: 36px !important; height: 36px !important; }
+  .logo div { font-size: 18px !important; line-height: 1.1 !important; }
+
+  /* Right-side actions row: keep buttons visible and not floating oddly */
+  header .nav.container > div:last-child {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end !important;
     gap: 10px !important;
   }
+
+  /* Tabs: horizontal scroll pills */
   .tabs {
     width: 100% !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
     gap: 10px !important;
     padding-bottom: 6px !important;
+    flex-wrap: nowrap !important;
   }
+
   .tab {
-    font-size: 0.95rem !important;
-    padding: 10px 10px !important;
+    font-size: 0.92rem !important;
+    padding: 10px 12px !important;
     background: rgba(255,255,255,0.35) !important;
     border: 1px solid rgba(148, 163, 184, 0.25) !important;
     white-space: nowrap !important;
   }
   .tab::after { display: none !important; }
+
+  /* Home hero: enforce single column (fix: collage + banner side-by-side on mobile) */
+  .hero { grid-template-columns: 1fr !important; gap: 14px !important; }
+  .photo-collage { display: none !important; }
+  .blue-banner { min-height: auto !important; padding: 18px !important; border-radius: 18px !important; }
+  .blue-banner h2 { font-size: 20px !important; line-height: 1.35 !important; }
+  .blue-banner .sub { font-size: 13px !important; }
 }
+
