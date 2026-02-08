@@ -157,13 +157,17 @@ body{ overflow-x:hidden; }
   }
 
   /* Use a shorter title on small screens */
-  header .logo .site-title .title-short{ display:inline; }
+  header .logo .site-title{ white-space: nowrap !important; }
+  header .logo .site-title .title-full,
+  header .logo .site-title .title-short{ white-space: nowrap !important; }
+
+  header .logo .site-title .title-short{ display:inline-block; }
   header .logo .site-title .title-full{ display:none; }
 
   @media (min-width: 430px){
     header .logo .site-title{ font-size: 18px !important; }
     header .logo .site-title .title-short{ display:none; }
-    header .logo .site-title .title-full{ display:inline; }
+    header .logo .site-title .title-full{ display:inline-block; }
   }
 
   header { padding: 6px 0 !important; }
