@@ -130,6 +130,11 @@ a:focus-visible {
 /* Prevent content shifting */
 body{ overflow-x:hidden; }
 
+/* Stack Latest Notices / Recent Publications earlier to avoid breakage */
+@media (max-width: 1024px) {
+  .home-toplists{ grid-template-columns: 1fr !important; }
+}
+
 /* Mobile layout tweaks */
 @media (max-width: 768px) {
   .container { padding: 14px !important; }
