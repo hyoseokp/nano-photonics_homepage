@@ -1,0 +1,53 @@
+{
+  "a11y": {
+    "skipToContent": "본문으로 건너뛰기",
+    "languageToggle": "언어 전환"
+  },
+  "nav": {
+    "home": "홈",
+    "members": "구성원",
+    "research": "연구",
+    "publications": "논문",
+    "notices": "공지"
+  },
+  "common": {
+    "admin": "관리자",
+    "signOut": "로그아웃",
+    "close": "닫기",
+    "edit": "수정",
+    "delete": "삭제",
+    "onlyAdmin": "관리자만 작성할 수 있습니다.",
+    "confirmDelete": "정말 삭제하시겠습니까?"
+  },
+  "pages": {
+    "home": {
+      "heroTitle": "CMOS 반도체 공정을 기반하여 나노포토닉스 소자들을 제작하고, 머신러닝을 활용해 메타표면과 같은 차세대 나노포토닉스 소자를 설계합니다.",
+      "heroSub": "문구 or 사진 등록 가능",
+      "latestNotices": "최근 공지",
+      "recentPublications": "최근 논문",
+      "labCalendar": "연구실 캘린더",
+      "calendarHint": "날짜를 클릭하면 해당 날짜의 이벤트를 확인합니다."
+    },
+    "members": {
+      "title": "구성원",
+      "desc": "구성원 목록입니다. 교수, 박사과정, 석사과정, 학부생, 졸업생으로 구분됩니다."
+    },
+    "research": {
+      "title": "연구"
+    },
+    "publications": {
+      "title": "논문"
+    },
+    "notices": {
+      "title": "공지"
+    }
+  },
+  "calendar": {
+    "today": "오늘",
+    "scheduleSuffix": "일정",
+    "noEvents": "일정이 없습니다.",
+    "confirmDeleteEvent": "이 이벤트를 삭제할까요?",
+    "prevMonth": "이전 달",
+    "nextMonth": "다음 달"
+  }
+}

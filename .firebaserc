@@ -9,6 +9,13 @@
           "cnu-nanophotonics-lab"
         ]
       }
+    },
+    "nanophotonicslab-135c7": {
+      "hosting": {
+        "cnu-nanophotonics-lab": [
+          "cnu-nanophotonics-lab"
+        ]
+      }
     }
   },
   "etags": {}

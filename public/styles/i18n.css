@@ -1,0 +1,25 @@
+/* i18n toggle UI (Task-07) */
+
+.lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.lang-toggle:hover {
+  background: #f3f4f6;
+}
+
+.lang-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}

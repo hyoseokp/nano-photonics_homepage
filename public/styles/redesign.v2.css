@@ -1,0 +1,166 @@
+/* Redesign layer (Task-06)
+   - Incremental + non-destructive: only overrides presentation.
+   - Keeps existing DOM ids/classes/JS behaviors intact.
+*/
+
+/* Base */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--bg-gradient);
+  min-height: 100%;
+}
+
+/* Ambient blur blobs (subtle, non-distracting) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -40px;
+  background: var(--bg-gradient);
+  filter: blur(18px);
+  opacity: 0.55;
+  z-index: -2;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+/* Skip link for accessibility */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transform: translateY(-200%);
+  transition: transform 120ms ease;
+  z-index: 10000;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* Header / nav */
+header {
+  height: auto !important;
+  padding: 0 !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+header .nav {
+  padding: 14px 0 !important;
+}
+
+.logo {
+  gap: 10px;
+}
+
+.logo-badge {
+  box-shadow: none;
+}
+
+.tabs {
+  gap: 18px !important;
+}
+
+.tab {
+  font-weight: 600;
+  color: var(--color-text) !important;
+  opacity: 0.9;
+}
+
+.tab:hover {
+  opacity: 1;
+}
+
+.tab.active::after {
+  background: var(--color-primary);
+}
+
+.cta {
+  color: #fff;
+  border-radius: var(--radius-btn);
+  background: linear-gradient(135deg, rgba(99, 102, 241, 1), rgba(59, 130, 246, 1));
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.18);
+}
+
+.cta:focus-visible,
+.tab:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-strong);
+}
+/* Cards */
+.card {
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  border-radius: 18px;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass cards: ensure inner padding stays readable */
+.card .body {
+  padding: 18px;
+}
+.list li {
+  background: #f3f4f6;
+}
+
+/* Footer */
+.footer {
+  margin-top: 48px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+/* Subtle scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 420ms ease, transform 520ms cubic-bezier(.2,.8,.2,1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive tweaks (prevent nav breakage) */
+@media (max-width: 768px) {
+  header .nav.container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .tabs {
+    gap: 10px !important;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 6px;
+  }
+
+  .tab {
+    font-size: 0.95rem;
+    padding: 10px 10px;
+    border-radius: var(--radius-btn);
+    background: rgba(255,255,255,0.35);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    white-space: nowrap;
+  }
+
+  .tab.active::after {
+    display: none;
+  }
+}

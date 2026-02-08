@@ -1,0 +1,53 @@
+{
+  "a11y": {
+    "skipToContent": "Skip to content",
+    "languageToggle": "Language"
+  },
+  "nav": {
+    "home": "Home",
+    "members": "Members",
+    "research": "Research",
+    "publications": "Publications",
+    "notices": "Notices"
+  },
+  "common": {
+    "admin": "Admin",
+    "signOut": "Sign out",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "onlyAdmin": "Only admins can create content.",
+    "confirmDelete": "Are you sure you want to delete?"
+  },
+  "pages": {
+    "home": {
+      "heroTitle": "We fabricate nanophotonic devices based on CMOS semiconductor processes and design next-generation devices such as metasurfaces using machine learning.",
+      "heroSub": "Text or photo can be added",
+      "latestNotices": "Latest Notices",
+      "recentPublications": "Recent Publications",
+      "labCalendar": "Lab Calendar",
+      "calendarHint": "Click a date to view the events on that day."
+    },
+    "members": {
+      "title": "Members",
+      "desc": "This is the member list. It is grouped into Professor, PhD, MS, Undergraduate, and Alumni."
+    },
+    "research": {
+      "title": "Research"
+    },
+    "publications": {
+      "title": "Publications"
+    },
+    "notices": {
+      "title": "Notices"
+    }
+  },
+  "calendar": {
+    "today": "Today",
+    "scheduleSuffix": "Schedule",
+    "noEvents": "No events.",
+    "confirmDeleteEvent": "Delete this event?",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month"
+  }
+}

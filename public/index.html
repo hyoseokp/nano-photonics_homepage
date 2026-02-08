@@ -4,10 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>CNU Nanophotonics</title>
+  <meta name="description" content="CNU Nanophotonics Lab — research, members, publications, notices, and lab calendar." />
+  <meta property="og:title" content="CNU Nanophotonics" />
+  <meta property="og:description" content="CNU Nanophotonics Lab — research, members, publications, notices, and lab calendar." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="/" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/tokens.v2.css">
+  <link rel="stylesheet" href="/styles/redesign.v2.css">
+  <link rel="stylesheet" href="/styles/i18n.css">
+  <script defer src="/scripts/reveal.v2.js"></script>
   <style>
     :root{
       --bg:#f4f7fb;
@@ -172,8 +182,10 @@
     .modal-content {background: var(--card);padding: 24px;border-radius: var(--radius);box-shadow: var(--shadow);width: 90%;max-width: 500px;}
     .modal-content .list li {background: var(--bg);}
   </style>
+  <link rel="stylesheet" href="/styles/saas.v2.css">
 </head>
 <body>
+<a class="skip-link" href="#main" data-i18n="a11y.skipToContent">Skip to content</a>
 <header style="height:120px; display:flex; align-items:center; justify-content:space-between; padding:0 40px; font-size:1.1rem;">
   <div class="nav" style="display:flex; align-items:center; width:100%; justify-content:space-between;">
     <div class="logo" style="display:flex; align-items:center; font-size:1.5rem; font-weight:bold; margin-left: 20px;">
@@ -182,21 +194,22 @@
       <span style="margin-left:10px; font-size: 1.8rem; vertical-align: middle;">CNU Nanophotonics</span>
     </div>
     <nav class="tabs" style="display:flex; gap:40px;">
-      <a class="tab" href="/" data-page="home" style="text-decoration:none; color:#000; font-weight:500;">Home</a>
-      <a class="tab" href="/members" data-page="members" style="text-decoration:none; color:#000; font-weight:500;">Members</a>
-      <a class="tab" href="/research" data-page="research" style="text-decoration:none; color:#000; font-weight:500;">Research</a>
-      <a class="tab" href="/publications" data-page="publications" style="text-decoration:none; color:#000; font-weight:500;">Publications</a>
-      <a class="tab" href="/notices" data-page="notices" style="text-decoration:none; color:#000; font-weight:500;">Notices</a>
+      <a class="tab" href="/" data-page="home" data-i18n="nav.home" style="text-decoration:none; color:#000; font-weight:500;">Home</a>
+      <a class="tab" href="/members" data-page="members" data-i18n="nav.members" style="text-decoration:none; color:#000; font-weight:500;">Members</a>
+      <a class="tab" href="/research" data-page="research" data-i18n="nav.research" style="text-decoration:none; color:#000; font-weight:500;">Research</a>
+      <a class="tab" href="/publications" data-page="publications" data-i18n="nav.publications" style="text-decoration:none; color:#000; font-weight:500;">Publications</a>
+      <a class="tab" href="/notices" data-page="notices" data-i18n="nav.notices" style="text-decoration:none; color:#000; font-weight:500;">Notices</a>
     </nav>
-    <div class="row-end" style="display:flex; gap:15px; align-items:center;">
+    <div class="row-end" style="display:flex; gap:10px; align-items:center;">
+      <button id="langToggle" class="lang-toggle" type="button" aria-label="Language" data-i18n-aria-label="a11y.languageToggle">KO</button>
       <span id="userEmail" class="pill hidden"></span>
-      <button id="signInBtn" class="cta">Admin</button>
-      <button id="signOutBtn" class="tab hidden">Sign out</button>
+      <button id="signInBtn" class="cta" data-i18n="common.admin">Admin</button>
+      <button id="signOutBtn" class="tab hidden" data-i18n="common.signOut">Sign out</button>
     </div>
   </div>
 </header>
 
-<main class="container">
+<main id="main" class="container">
     <section id="page-home">
       <div class="hero">
         <div class="card">
@@ -209,10 +222,9 @@
             </div>
           </div>
         </div>
-        <div class="blue-banner">
-          <h2>CMOS 반도체 공정을 기반하여 나노포토닉스 소자들을 제작하고, 
-머신러닝을 활용해 메타표면과 같은 차세대 나노포토닉스 소자를 설계합니다.</h2>
-          <p class="sub">문구 or 사진 등록 가능</p>
+        <div class="blue-banner" data-reveal>
+          <h2 data-i18n="pages.home.heroTitle">CMOS 반도체 공정을 기반하여 나노포토닉스 소자들을 제작하고, 머신러닝을 활용해 메타표면과 같은 차세대 나노포토닉스 소자를 설계합니다.</h2>
+          <p class="sub" data-i18n="pages.home.heroSub">문구 or 사진 등록 가능</p>
         </div>
       </div>
 
@@ -220,7 +232,7 @@
         <div class="card">
           <div class="body">
             <div class="row" style="justify-content:space-between;align-items:center">
-              <h3 class="title-lg">Latest Notices</h3>
+              <h3 class="title-lg" data-i18n="pages.home.latestNotices">Latest Notices</h3>
               <button class="plus" title="All notices" onclick="navTo('notices')">+</button>
             </div>
             <ul id="homeNotices" class="list"></ul>
@@ -229,7 +241,7 @@
         <div class="card">
           <div class="body">
             <div class="row" style="justify-content:space-between;align-items:center">
-              <h3 class="title-lg">Recent Publications</h3>
+              <h3 class="title-lg" data-i18n="pages.home.recentPublications">Recent Publications</h3>
               <button class="plus" title="All publications" onclick="navTo('publications')">+</button>
             </div>
             <ul id="homePubs" class="list"></ul>
@@ -254,27 +266,27 @@
       <div class="card" style="margin-top:24px">
         <div class="body">
           <div class="row" style="justify-content:space-between;align-items:center">
-            <h3 class="title-lg">Lab Calendar</h3>
+            <h3 class="title-lg" data-i18n="pages.home.labCalendar">Lab Calendar</h3>
             <!-- [수정] 컨트롤 래퍼에 id 추가 -->
             <div class="row-end" id="calendarControls">
               <button id="btnAddEvent" class="cta hidden">+ Add Event</button>
-              <button class="tab" id="calPrev" title="Previous month">‹</button>
+              <button class="tab" id="calPrev" title="Previous month" data-i18n-aria-label="calendar.prevMonth">‹</button>
               <span class="pill" id="calTitle">Loading…</span>
-              <button class="tab" id="calNext" title="Next month">›</button>
+              <button class="tab" id="calNext" title="Next month" data-i18n-aria-label="calendar.nextMonth">›</button>
             </div>
           </div>
           <div class="calendar-grid" id="calendarGrid"></div>
-          <div class="muted" style="margin-top:8px">날짜를 클릭하면 해당 날짜의 이벤트를 확인합니다.</div>
+          <div class="muted" style="margin-top:8px" data-i18n="pages.home.calendarHint">날짜를 클릭하면 해당 날짜의 이벤트를 확인합니다.</div>
         </div>
       </div>
     </section>
 
     <section id="page-members" class="hidden">
       <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 class="title-lg">Members</h2>
+        <h2 class="title-lg" data-i18n="pages.members.title">Members</h2>
         <button id="btnAddMember" class="cta hidden">+ Add Member</button>
       </div>
-      <p class="desc">구성원 목록입니다. 교수, 박사과정, 석사과정, 학부생, 졸업생으로 구분됩니다.</p>
+      <p class="desc" data-i18n="pages.members.desc">구성원 목록입니다. 교수, 박사과정, 석사과정, 학부생, 졸업생으로 구분됩니다.</p>
       
       <div id="membersWrap">
         <h3 class="member-category-title">- 교수 -</h3>
@@ -340,7 +352,7 @@
 
     <section id="page-research" class="hidden">
       <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 class="title-lg">Research</h2>
+        <h2 class="title-lg" data-i18n="pages.research.title">Research</h2>
         <button id="btnAddTopic" class="cta hidden">+ Add Topic</button>
       </div>
       <div id="researchWrap" class="grid cols-2" style="margin-top:16px"></div>
@@ -348,7 +360,7 @@
 
     <section id="page-publications" class="hidden">
       <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 class="title-lg">Publications</h2>
+        <h2 class="title-lg" data-i18n="pages.publications.title">Publications</h2>
         <button id="btnAddPub" class="cta hidden">+ Add Publication</button>
       </div>
       <ul id="pubList" class="list" style="margin-top:16px"></ul>
@@ -356,7 +368,7 @@
 
     <section id="page-notices" class="hidden">
       <div class="row" style="justify-content:space-between;align-items:center">
-        <h2 class="title-lg">Notices</h2>
+        <h2 class="title-lg" data-i18n="pages.notices.title">Notices</h2>
         <button id="btnAddNotice" class="cta hidden">+ New Notice</button>
       </div>
       <ul id="noticeList" class="list" style="margin-top:16px"></ul>
@@ -369,15 +381,18 @@
   <div class="modal-content">
     <h3 id="modal-title"></h3>
     <ul id="modal-event-list" class="list"></ul>
-    <button id="modal-close" class="tab" style="margin-top: 16px;">닫기</button>
+    <button id="modal-close" class="tab" style="margin-top: 16px;" data-i18n="common.close">닫기</button>
   </div>
 </div>
 
 <script type="module">
+    import { initI18n, setLocale, getLocale, t } from "/scripts/i18n.js";
     // Firebase SDK (v10+ modular)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
     import { getFirestore, collection, addDoc, getDocs, getDoc, doc, query, orderBy, limit, serverTimestamp, updateDoc, deleteDoc, where } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+    ;(async () => {
 
     // Your Firebase config
     const firebaseConfig = {
@@ -401,6 +416,20 @@
     const $$ = (sel)=>document.querySelectorAll(sel);
     const yearEl = $('#year'); yearEl.textContent = new Date().getFullYear();
     const pages = { home: $('#page-home'), members: $('#page-members'), research: $('#page-research'), publications: $('#page-publications'), notices: $('#page-notices') };
+
+    // i18n init (Task-07) — await before first render
+    try {
+      await initI18n();
+    } catch (e) {
+      console.error('i18n init failed', e);
+    }
+    const langToggle = $('#langToggle');
+    if (langToggle) {
+      langToggle.addEventListener('click', async () => {
+        const next = (getLocale() === 'ko') ? 'en' : 'ko';
+        await setLocale(next);
+      });
+    }
 
     // Routing
     function routeFromPath(){
@@ -518,13 +547,13 @@
             <div class="muted" style="margin-top:6px">${n.body?.slice(0,160) ?? ''}</div>
           </div>
           <div class="row-end">
-            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="notice-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="notice-del">Delete</button>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="notice-edit">${t('common.edit')}</button><button class="tab" data-id="${d.id}" data-type="notice-del">${t('common.delete')}</button>`:''}
           </div>`;
         list.appendChild(li);
       });
     }
     async function addNotice(){
-      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      if(!isAdmin(auth.currentUser)) return alert(t('common.onlyAdmin'));
       const title = prompt('제목'); if(!title) return;
       const body = prompt('내용 (간단 요약)');
       await addDoc(col('notices'), { title, body: body||'', createdAt: serverTimestamp() });
@@ -575,13 +604,13 @@
           </div>
           <div class="row-end">
             ${p.link?`<a class="tab" href="${p.link}" target="_blank">PDF</a>`:''}
-            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="pub-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="pub-del">Delete</button>`:''}
+            ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="pub-edit">${t('common.edit')}</button><button class="tab" data-id="${d.id}" data-type="pub-del">${t('common.delete')}</button>`:''}
           </div>`;
         list.appendChild(li);
       });
     }
     async function addPub(){
-      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      if(!isAdmin(auth.currentUser)) return alert(t('common.onlyAdmin'));
       const title = prompt('논문 제목'); if(!title) return;
       const authors = prompt('저자 (comma)')||'';
       const venue = prompt('학회/저널')||'';
@@ -622,7 +651,7 @@
             <div class="member-footer">
               ${m.email ? `<a class="pill" href="mailto:${m.email}">Email</a>` : ''}
               ${m.site ? `<a class="pill" href="${m.site}" target="_blank">Website</a>` : ''}
-              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="member-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="member-del">Delete</button>` : ''}
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="member-edit">${t('common.edit')}</button><button class="tab" data-id="${d.id}" data-type="member-del">${t('common.delete')}</button>` : ''}
             </div>
           </div>
         `;
@@ -649,7 +678,7 @@
 
 
     async function addMember(){
-      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      if(!isAdmin(auth.currentUser)) return alert(t('common.onlyAdmin'));
       const name = prompt('이름'); if(!name) return;
       const role = prompt('직함/과정 (선택: 교수, 박사과정, 석사과정, 학부생, 졸업생)');
       if(!['교수', '박사과정', '석사과정', '학부생', '졸업생'].includes(role)) return alert('유효한 직함을 입력해주세요.');
@@ -680,14 +709,14 @@
               ${(r.tags||[]).map(t=>`<span class='tag'>${t}</span>`).join('')}
             </div>
             <div class="row-end" style="margin-top:10px">
-              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="topic-edit">Edit</button><button class="tab" data-id="${d.id}" data-type="topic-del">Delete</button>`:''}
+              ${auth.currentUser && isAdmin(auth.currentUser) ? `<button class="tab" data-id="${d.id}" data-type="topic-edit">${t('common.edit')}</button><button class="tab" data-id="${d.id}" data-type="topic-del">${t('common.delete')}</button>`:''}
             </div>
           </div>`;
         wrap.appendChild(card);
       });
     }
     async function addTopic(){
-      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      if(!isAdmin(auth.currentUser)) return alert(t('common.onlyAdmin'));
       const title = prompt('주제명'); if(!title) return;
       const summary = prompt('요약')||'';
       const tags = (prompt('태그(콤마 구분)')||'').split(',').map(s=>s.trim()).filter(Boolean);
@@ -704,11 +733,13 @@
       if(!type) return;
 
       if (!isAdmin(auth.currentUser) && (type.endsWith('-del') || type.endsWith('-edit'))) {
-        return alert('관리자만 가능합니다.');
+        return alert(t('common.onlyAdmin'));
+      
       }
 
       if(type.endsWith('-del')){
-        if(confirm('삭제하시겠습니까?')){
+        if(confirm(t('common.confirmDelete'))){
+
           const coll = type.startsWith('notice')?'notices': type.startsWith('pub')?'publications': type.startsWith('member')?'members':'research';
           await deleteDoc(doc(db, coll, id));
           if(coll==='notices'){ await loadHomeNotices(); await loadNotices(); }
@@ -757,7 +788,7 @@
       
       // 캘린더 이벤트 수정/삭제
       if (type === 'event-del') {
-        if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+        if (confirm(t('calendar.confirmDeleteEvent'))) {
           await deleteDoc(doc(db, 'events', id));
           await renderCalendar();
           $('#event-modal').classList.add('hidden');
@@ -797,7 +828,10 @@
     }
     function firstOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
     function lastOfMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0); }
-    function monthTitle(d){ return d.toLocaleString('en-US', { month:'long', year:'numeric' }); }
+    function monthTitle(d){
+      const loc = (getLocale && getLocale() === 'ko') ? 'ko-KR' : 'en-US';
+      return d.toLocaleString(loc, { month:'long', year:'numeric' });
+    }
     
     async function loadMonthEvents(d){
       const start = firstOfMonth(d); const end = lastOfMonth(d);
@@ -825,7 +859,7 @@
         const date = new Date(cal.cur.getFullYear(), cal.cur.getMonth(), inMonth? dayNum: 0);
         const label = inMonth? dayNum: '';
         const isToday = inMonth && (new Date().toDateString()===date.toDateString());
-        cell.innerHTML = `<div class="cal-day"><span>${label}</span>${isToday?'<span class="pill">Today</span>':''}</div><div class="cal-events"></div>`;
+        cell.innerHTML = `<div class="cal-day"><span>${label}</span>${isToday?`<span class="pill">${t('calendar.today')}</span>`:''}</div><div class="cal-events"></div>`;
         if(isToday) cell.classList.add('cal-today');
         if(inMonth){
           const key = ymd(date); const wrap = cell.querySelector('.cal-events');
@@ -847,7 +881,7 @@
             const modalTitle = $('#modal-title');
             const eventList = $('#modal-event-list');
 
-            modalTitle.textContent = `${key} 일정`;
+            modalTitle.textContent = `${key} ${t('calendar.scheduleSuffix')}`;
             eventList.innerHTML = '';
 
             if (eventsOnThisDay.length > 0) {
@@ -855,8 +889,8 @@
                 const li = document.createElement('li');
                 const adminButtons = isAdmin(auth.currentUser)
                   ? `<div class="row-end">
-                      <button class="tab" data-type="event-edit" data-id="${ev.id}">수정</button>
-                      <button class="tab" data-type="event-del" data-id="${ev.id}">삭제</button>
+                      <button class="tab" data-type="event-edit" data-id="${ev.id}">${t('common.edit')}</button>
+                      <button class="tab" data-type="event-del" data-id="${ev.id}">${t('common.delete')}</button>
                     </div>`
                   : '';
 
@@ -864,7 +898,7 @@
                 eventList.appendChild(li);
               });
             } else {
-              eventList.innerHTML = `<li>일정이 없습니다.</li>`;
+              eventList.innerHTML = `<li>${t('calendar.noEvents')}</li>`;
             }
             
             modal.classList.remove('hidden');
@@ -879,7 +913,7 @@
     });
 
     async function addEvent(){
-      if(!isAdmin(auth.currentUser)) return alert('관리자만 작성할 수 있습니다.');
+      if(!isAdmin(auth.currentUser)) return alert(t('common.onlyAdmin'));
       const dateStr = prompt('날짜 (YYYY-MM-DD)'); if(!dateStr) return;
       const title = prompt('이벤트 제목'); if(!title) return;
       const whereTo = prompt('장소(optional)')||''; const note = prompt('비고(optional)')||'';
@@ -892,6 +926,8 @@
     if(calPrev&&calNext){ calPrev.addEventListener('click', ()=>{ cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth()-1, 1); renderCalendar(); }); calNext.addEventListener('click', ()=>{ cal.cur = new Date(cal.cur.getFullYear(), cal.cur.getMonth()+1, 1); renderCalendar(); }); }
 
     go(routeFromPath());
+
+    })();
 </script>
 
 </body>
