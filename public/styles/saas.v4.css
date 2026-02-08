@@ -139,6 +139,12 @@ body{ overflow-x:hidden; }
 @media (max-width: 768px) {
   .container { padding: 14px !important; }
 
+  /* Header title: keep it on one line on mobile */
+  header .logo{ flex-wrap: nowrap !important; }
+  header .logo span{ white-space: nowrap !important; }
+  header .logo img{ width: 56px !important; height: 56px !important; }
+  header .logo span[style]{ font-size: 22px !important; line-height: 1.1 !important; }
+
   header { padding: 6px 0 !important; }
   header .nav.container {
     flex-direction: column !important;
