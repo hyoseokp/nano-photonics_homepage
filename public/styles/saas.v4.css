@@ -140,10 +140,22 @@ body{ overflow-x:hidden; }
   .container { padding: 14px !important; }
 
   /* Header title: keep it on one line on mobile */
-  header .logo{ flex-wrap: nowrap !important; }
-  header .logo span{ white-space: nowrap !important; }
-  header .logo img{ width: 56px !important; height: 56px !important; }
-  header .logo span[style]{ font-size: 22px !important; line-height: 1.1 !important; }
+  header .logo{
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+  }
+  header .logo img{ width: 48px !important; height: 48px !important; }
+
+  header .logo .site-title{
+    font-size: 18px !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    min-width: 0 !important;
+    max-width: calc(100vw - 140px) !important; /* menu + padding + logo */
+    display: block;
+  }
 
   header { padding: 6px 0 !important; }
   header .nav.container {
